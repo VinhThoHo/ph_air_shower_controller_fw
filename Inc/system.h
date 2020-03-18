@@ -26,16 +26,18 @@
 typedef struct
 {
 	uint8_t lamp;//Led
-	uint8_t uv;//outside door
+	// uint8_t uv;//outside door
+	uint8_t outdoor;//outside door
 	uint8_t fan; //air nozzle
-	uint8_t aut; //inside door
+	uint8_t aut;
+	uint8_t indoor;//inside door
 } DEVICE_STATUS_T;
 
 /* device struct */
 typedef struct
 {
-	uint8_t doorFlag;//outside door flag
-	uint8_t doorLevel;
+	uint8_t outdoorFlag;//outside door flag
+	uint8_t indoorFlag;//inside door flag
 	uint8_t fanFlag; //air nozzle flag
 	uint8_t autoFlag;//auto air nozzle flag
 	uint32_t autoTimeOff;
@@ -47,6 +49,7 @@ typedef struct
 {
 	uint32_t tick;
 	uint32_t uvTime;
+	// uint32_t lampTime;
 	uint32_t filterTime;
 	uint32_t sysTime;
 } SYS_STRUCT_T;

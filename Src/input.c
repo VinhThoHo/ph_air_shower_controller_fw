@@ -176,67 +176,87 @@ uint8_t Input_Process(void)
     return currentState;
 }
 
+/* ------------------&&&------------------ */
+// In1() -> Outside door sensor
+// In2() -> Inside door sensor
+// In3() -> Detect people sensor
+// In4() -> Exit button
+/* --------------------------------------- */
 void Input_Manage(void)
 {
     if (HAL_GetTick() - input.tick > 1)
     {
         if (In4() == 0) //Exit on
         {
-            dev.status.lamp = 1; //Led on
-            dev.status.uv = 0;   //outside door isn't lock
-            dev.status.aut = 0;  //inside door isn't lock
-            dev.status.fan = 0;  //air nozzle is off
+            dev.status.lamp = 1;    //Led on
+            dev.status.outdoor = 0; //outside door isn't lock
+            dev.status.indoor = 0;  //inside door isn't lock
+            dev.status.fan = 0;     //air nozzle is off
         }
         else //Exit off
         {
-            if ((In3() == 1) && (In2() == 0) && (In1() == 0)) //people sensor off, inside sensor off, outside sensor off
+            if ((In1() == 0) && (In2() == 0) && (In3() == 1)) //outside sensor off, inside sensor off, people sensor off (nobody)
             {
-                dev.status.uv = 0;   //outside door isn't lock
-                dev.status.aut = 0;  //inside door isn't lock
-                dev.status.lamp = 0; //Led is off
-                dev.status.fan = 0;  //air nozzle is off
+                dev.status.outdoor = 0; //outside door isn't lock
+                dev.status.indoor = 0;  //inside door isn't lock
+                dev.status.lamp = 0;    //Led is off
+                dev.status.fan = 0;     //air nozzle is off
+                dev.outdoorFlag = 0;
+                dev.outdoorFlag = 0;
                 /* --------add Flag display LCD-------- */
             }
-            else if (In1() == 1) //outside sensor on or the outside door is opened
+            else if ((In1() == 1) && (In2() == 0) && (In3() == 1)) //outside sensor on when there aren't people
             {
-                // dev.doorFlag = ModeWait;
-                dev.doorFlag = on;
-                dev.status.aut = 1; //inside door is locked
+                dev.outdoorFlag = 1;
+                dev.status.indoor = 1; //inside door is locked
             }
-            else if ((In1() == 0) && (In3() == 1) && dev.doorFlag == 1) //The outside door is opened after that is closed and no people inside
+            else if ((In1() == 0) && (In2() == 0) && (In3() == 1) && dev.outdoorFlag == 1) //The outside door is opened after that is closed and no people inside
             {
-                // toggle = TIME_PAGE;
-                dev.fanFlag = off;
-                dev.status.lamp = 0; //Led off
-                dev.status.uv = 1;   //outside door is locked
-                dev.status.aut = 1;  //inside door is locked
-                dev.status.fan = 1;  //air nozzle is on in 5s
-                dev.doorFlag == off;
+                dev.fanFlag = 0;
+                dev.status.lamp = 0;    //Led off
+                dev.status.outdoor = 1; //outside door is locked
+                dev.status.indoor = 1;  //inside door is locked
+                dev.status.fan = 1;     //air nozzle is on in 5s
+                // dev.outdoorFlag = 0;
             }
-            else if ((In1() == 1) && (In3() == 0)) //The outside door is opened and have people inside
+            else if ((In1() == 1) && (In2() == 0) && (In3() == 0)) //The outside door is opened and have people inside
             {
-                // toggle = TIME_PAGE;
+                dev.status.lamp = 1;   //Led on
+                dev.status.indoor = 1; //inside door is locked
+                dev.status.fan = 0;    //air nozzle is off
+            }
+            else if ((In1() == 0) && (In2() == 0) && (In3() == 0) && dev.outdoorFlag == 1) //Outside sensor off, people sensor on
+            {
+                dev.status.lamp = 1;   //Led on
+                dev.status.indoor = 1; //inside door is locked
+                dev.fanFlag = 1;       //user setup time air nozzle
+            }
+            else if ((In1() == 0) && (In2() == 0) && (In3() == 0) && (dev.outdoorFlag == 0)) //Outside sensor off, people sensor on, air nozzle off
+            {
+                dev.status.lamp = 1;    //Led on
+                dev.status.outdoor = 0; //outside door is open
+                dev.status.indoor = 0;  //inside door is open
+            }
+            else if ((In1() == 1) && (In2() == 0) && (In3() == 0) && (dev.outdoorFlag == 0)) //outside sensor on when there are people
+            {
                 dev.status.lamp = 1; //Led on
-                dev.status.aut = 1;  //inside door is locked
-                dev.status.fan = 0;  //air nozzle is off
+                dev.outdoorFlag = 1;
+                dev.status.indoor = 1; //inside door is locked
             }
-            else if ((In1() == 0) && (In3() == 0) && dev.doorFlag == 1) //Outside sensor off, people sensor on
+            else if ((In1() == 0) && (In2() == 1) && (In3() == 0) && (dev.outdoorFlag == 0)) //Inside sensor on when there are people (from inside)
             {
-                dev.status.lamp = 1; //Led on
-                dev.status.aut = 1;  //inside door is locked
-                /* ------setup time phun khi------ */
-                dev.doorFlag == off;
-                dev.fanFlag = on;
+                dev.status.lamp = 1;    //Led on
+                dev.status.outdoor = 1; //outside door is locked
+                // dev.indoorFlag = 1;
             }
-            else if ((In1() == 0) && (In3() == 0) && dev.fanFlag == 1) //Outside sensor off, people sensor on, air nozzle off
+            else if ((In1() == 0) && (In2() == 1) && (In3() == 1)) //Inside sensor on when there aren't people (from outside)
             {
-                dev.status.uv = 0;  //outside door isn't lock
-                dev.status.aut = 0; //inside door isn't lock
+                dev.status.outdoor = 1; //outside door is locked
             }
-            else if (In2() == 1) //Inside sensor on
+            /* else if (In3() == 0)
             {
-                dev.status.uv = 1; //outside door is locked
-            }
+                dev.status.lamp = 1; //Led on when there are people
+            } */
         }
 
         /* switch (Input_Process())

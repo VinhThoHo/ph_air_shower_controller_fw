@@ -13,6 +13,9 @@
 #include "system.h"
 #include "sm5852.h"
 
+#define LCD_WIDTH   128
+#define LCD_HEIGHT  64
+
 MAIN_SCREEN_T main_scr;
 static void DateTime_Display(void);
 static void Function_Frame(void);
@@ -27,7 +30,7 @@ void main_screen_init(void)
 void Lamp_Status(uint8_t lampStatus)
 {
     u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
-    u8g2_DrawStr(&u8g2, 9, 33, "NEON");
+    u8g2_DrawStr(&u8g2, 9, 33, "LAMP");
     if (lampStatus)
     {
         u8g2_DrawBitmap(&u8g2, 0, 33, bmp_neon_on.width / 8, bmp_neon_on.height, bmp_neon_on.data);
@@ -38,18 +41,19 @@ void Lamp_Status(uint8_t lampStatus)
     }
 }
 
-/* UV status display function */
-void UV_Status(uint8_t uvStatus)
+/* Outdoor status display function */
+void OutDoor_Status(uint8_t outdoorStatus)
 {
     u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
-    u8g2_DrawStr(&u8g2, 45, 33, "UV");
-    if (uvStatus)
+    u8g2_DrawStr(&u8g2,((14 - strlen("OutDoor"))/2)*6, 7, "OutDoor");
+    u8g2_SetFont(&u8g2, u8g2_font_10x20_tr);
+    if (outdoorStatus == 0)
     {
-        u8g2_DrawBitmap(&u8g2, 32, 33, bmp_uv_on.width / 8, bmp_uv_on.height, bmp_uv_on.data);
+        u8g2_DrawStr(&u8g2,((8 - strlen("LOCK"))/2)*6, 26, "LOCK");
     }
     else
     {
-        u8g2_DrawBitmap(&u8g2, 32, 33, bmp_uv_off.width / 8, bmp_uv_off.height, bmp_uv_off.data);
+        u8g2_DrawStr(&u8g2,((8 - strlen("OPEN"))/2)*6, 26, "OPEN");
     }
 }
 
@@ -74,7 +78,8 @@ void Auto_Status(uint8_t status)
     {
         u8g2_SetDrawColor(&u8g2, 0);
         u8g2_SetFont(&u8g2, u8g2_font_9x15_mr);
-        sprintf(buff, "%02d", (dev.autoTimeOff+59)/60);
+        // sprintf(buff, "%02d", (dev.autoTimeOff+59)/60);
+        sprintf(buff, "%02d", dev.autoTimeOff);
         u8g2_DrawStr(&u8g2, 104, 54, buff);
         u8g2_SetDrawColor(&u8g2, 1);
         if(dev.autoTimeOff == 0) 
@@ -117,7 +122,7 @@ void Neon_Time(uint32_t time)
     u8g2_SetDrawColor(&u8g2, 1);
 }
 
-void Filter_Pcent(float pressure, uint16_t threshold)
+/* void Filter_Pcent(float pressure, uint16_t threshold)
 {
     uint8_t percent;
     uint8_t buff[5];
@@ -152,10 +157,10 @@ void Filter_Pcent(float pressure, uint16_t threshold)
     sprintf(buff, "%d %%", percent);
     u8g2_DrawStr(&u8g2, 98, 10, buff);
     u8g2_DrawBox(&u8g2, 45, 4, line, 6);
-}
+} */
 
 /* Draw Frame function */
-static void Function_Frame(void)
+/* static void Function_Frame(void)
 {
     u8g2_SetDrawColor(&u8g2, 1);
     u8g2_DrawFrame(&u8g2, 0, 24, 128, 40);
@@ -163,8 +168,13 @@ static void Function_Frame(void)
     u8g2_DrawHVLine(&u8g2, 32, 24, 40, 1);
     u8g2_DrawHVLine(&u8g2, 64, 24, 40, 1);
     u8g2_DrawHVLine(&u8g2, 96, 24, 40, 1);
+} */
+static void Function_Frame(void)
+{
+    u8g2_SetDrawColor(&u8g2, 1);
+    u8g2_DrawHLine(&u8g2, 0, LCD_HEIGHT/2 - 1, LCD_WIDTH);
+    u8g2_DrawVLine(&u8g2, LCD_WIDTH/2 + 1, 0, LCD_HEIGHT);
 }
-
 /* Display Date time function */
 static void DateTime_Display(void)
 {
@@ -196,9 +206,9 @@ void Main_Screen_Manage(void)
     //UV_Time(sys.uvTime/3600);
     //Neon_Time(sys.fanTime/3600);
     Lamp_Status(dev.status.lamp);
-    UV_Status(dev.status.uv);
+    OutDoor_Status(dev.status.outdoor);
     Fan_Status(dev.status.fan);
     Auto_Status(dev.status.aut);
     Function_Frame();
-    Filter_Pcent(sm5852_1.pressure, sys_cfg.pressureVal);
+    // Filter_Pcent(sm5852_1.pressure, sys_cfg.pressureVal);
 }

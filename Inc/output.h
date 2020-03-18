@@ -12,19 +12,17 @@
 
 #define Neon_On()               HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET)
 #define Neon_Off()              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET)
-#define UV_On()                 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET)
-#define UV_Off()                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET)
-#define Fast_Fan_On()           HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET)
-#define Fast_Fan_Off()          HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET)
-#define Medium_Fan_On()         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET) 
-#define Medium_Fan_Off()        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET)
-#define Slow_Fan_On()           HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET)
-#define Slow_Fan_Off()          HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET)
+#define OutDoor_On()            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET)
+#define OutDoor_Off()           HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET)
+#define InDoor_On()             HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET)
+#define InDoor_Off()            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET)
+#define Fan_On()                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET) 
+#define Fan_Off()               HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET)
 
 void Output_Init(void);
 void Output_Manage(void);
 void SW_Neon(uint8_t neonStatus);
-void SW_Uv(uint8_t uvStatus);
+void SW_OutDoor(uint8_t outdoorStatus);
 void SW_Fan(uint8_t fanStatus);
-void SW_Auto(uint8_t AutoStatus);
+void SW_InDoor(uint8_t indoorStatus);
 #endif

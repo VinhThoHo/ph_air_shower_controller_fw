@@ -14,7 +14,7 @@
 #include "iwdg.h"
 #include "system.h"
 
-const TREE_VIEW treeView[] = {
+/* const TREE_VIEW treeView[] = {
     {0x0000, " ", normalEvt, 0},
     {0x0100, " 1.Date Time \n 2.Setup Filter\n 3.Setup Auto Time \n 4.Fan Speed \n", Dis1Evt, 0},
       {0x0100 + 1, " Set Date Time \n", SetTimeEvt, &treeView[1]},
@@ -35,6 +35,26 @@ const TREE_VIEW treeView[] = {
       {0x0400 + 1, " Reset Filter Time \n", ResetFilterTimeEvt, &treeView[16]},
       {0x0400 + 2, " System Time ", ResetSystemTimeEvt, &treeView[16]},
       {0x0400 + 3, " Date Manufacture ", ManufactureEvt, &treeView[16]},
+}; */
+const TREE_VIEW treeView[] = {
+    {0x0000, " ", normalEvt, 0},
+    {0x0100, " 1.Setup AirFan Time \n 2.Date Time \n 3.Speaker \n 4.Select Display \n", Dis1Evt, 0},
+      {0x0100 + 1, " AirFan Time \n", SetAutoTimeEvt, &treeView[1]},
+      {0x0100 + 2, " Set Date Time \n", SetTimeEvt, &treeView[1]},
+      {0x0100 + 3, " Speaker \n", SetSpeakerEvt, &treeView[1]},
+      {0x0100 + 4, " View Page \n", SetDisplayEvt, &treeView[1]},
+    {0x0200, " 5.Brighness \n 6.Backlight \n 7.View Time Lamp \n 8.View Time AirFan \n", Dis2Evt, 0},
+      {0x0200 + 1, " Brighness \n", SetBrighnessEvt, &treeView[6]},
+      {0x0200 + 2, " Backlight \n", SetBackLightEvt, &treeView[6]},
+      {0x0200 + 3, " Lamp Time \n", ViewUVTimeEvt, &treeView[6]},
+      {0x0200 + 4, " AirFan Time \n", ViewFilterTimeEvt, &treeView[6]},
+    {0x0300, " 9.View Time System \n 10.Reset Lamp Time \n 11.Reset AirFan Time \n 12.Reset System Time \n", Dis3Evt, 0},
+      {0x0300 + 1, " System Time \n", ViewSystemTimeEvt, &treeView[11]},
+      {0x0300 + 2, " Reset Lamp Time \n", ResetUVTimeEvt, &treeView[11]},
+      {0x0300 + 3, " Reset AirFan Time \n", ResetFilterTimeEvt, &treeView[11]},
+      {0x0300 + 4, " Reset System Time ", ResetSystemTimeEvt, &treeView[11]},
+    {0x0400, " 13.Date Manufacture \n ", Dis4Evt, 0},
+      {0x0400 + 1, " Date Manufacture ", ManufactureEvt, &treeView[16]},
 };
 
 uint32_t btnTime;
@@ -242,7 +262,7 @@ void MENU_Manager(uint8_t key)
         }
         else if (menuIdx == 0x0400)
         {
-          if (++menuIdxCh > 3)
+          if (++menuIdxCh > 1)
           {
             menuIdxCh = 1;
             menuIdx = 0x0100;
@@ -253,10 +273,10 @@ void MENU_Manager(uint8_t key)
       }
       if(menuIdx == 0)
       {
-        if(dev.status.aut == 0)
+        /* if(dev.status.aut == 0)
           dev.status.uv = ~dev.status.uv;
         if(sys_cfg.speaker) buzzer_short_beep();
-        dispToggle = 0;
+        dispToggle = 0; */
       }
       break;
     case BTN_UP:
@@ -272,7 +292,7 @@ void MENU_Manager(uint8_t key)
             if (menuIdx < 0x0100)
             {
               menuIdx = 0x0400;
-              menuIdxCh = 3;
+              menuIdxCh = 1;
             }
           }
           //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
@@ -290,25 +310,25 @@ void MENU_Manager(uint8_t key)
       }
       if(menuIdx == 0)
       {
-        if(dev.status.aut == 0)
+        /* if(dev.status.aut == 0)
           dev.status.fan = ~dev.status.fan;
         if(sys_cfg.speaker) buzzer_short_beep();
-        dispToggle = 0;
+        dispToggle = 0; */
       }
       break;
     case BTN_MENU:
       if(menuIdx == 0)
       {
-        if(++menuTimePress > 200)
+        if(++menuTimePress > 1) //200
         {
           menuTimePress = 0;
           menuIdx = 0x0100;
           MENU_ToEvt(menuIdx, key);
         }
-        if(dev.status.aut == 0)
+        /* if(dev.status.aut == 0)
           dev.status.lamp = ~dev.status.lamp;
         dispToggle = 0;
-        if(sys_cfg.speaker) buzzer_short_beep();
+        if(sys_cfg.speaker) buzzer_short_beep(); */
       }
       else
       {

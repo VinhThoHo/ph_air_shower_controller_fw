@@ -25,7 +25,7 @@ void Output_Init(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8;
+    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -42,12 +42,19 @@ void SW_Neon(uint8_t neonStatus)
     else
         Neon_Off();
 }
-void SW_Uv(uint8_t uvStatus)
+void SW_OutDoor(uint8_t outdoorStatus)
 {
-    if (uvStatus)
-        UV_On();
+    if (outdoorStatus)
+        OutDoor_On();
     else
-        UV_Off();
+        OutDoor_Off();
+}
+void SW_InDoor(uint8_t indoorStatus)
+{
+    if (indoorStatus)
+        InDoor_On();
+    else
+        InDoor_Off();
 }
 void SW_Fan(uint8_t fanStatus)
 {
@@ -55,37 +62,25 @@ void SW_Fan(uint8_t fanStatus)
     {
         switch (sys_cfg.fanSpeed)
         {
-	        case 0:
-            case 1:
-                Slow_Fan_Off();
-	            Medium_Fan_Off();
-                Fast_Fan_On();
-	            break;
-	        case 2:
-	            Slow_Fan_Off();
-                Medium_Fan_On();
-	            Fast_Fan_Off();
-	            break;
-	        case 3:
-                Slow_Fan_On();
-	            Medium_Fan_Off();
-                Fast_Fan_Off();
-	            break;
-	        default:
-	            break;
+        case 0:
+        case 1: //5s
+            Fan_On();
+            break;
+        case 2: //Setup 0-99s
+            Fan_On();
+            break;
+        default:
+            break;
         }
     }
     else
-    {
-        Slow_Fan_Off();
-        Medium_Fan_Off();
-        Fast_Fan_Off();
-    }
+        Fan_Off();
 }
 
 void Output_Manage(void)
 {
-    SW_Neon(dev.status.lamp);
-    SW_Uv(dev.status.uv);
-    SW_Fan(dev.status.fan);
+    SW_Neon(dev.status.lamp);       //Lamp
+    SW_OutDoor(dev.status.outdoor); //Outside door
+    SW_InDoor(dev.status.indoor);   //Inside door
+    SW_Fan(dev.status.fan);         //Air Nozzle
 }

@@ -164,7 +164,7 @@ void Info_Screen_Manage(void)
     UV_Time(sys.uvTime/3600);
     Filter_Time(sys.filterTime/3600);
     Sys_Time(sys.sysTime/3600);
-    Filter_Param(sm5852_1.pressure, sm5852_1.flow);
-    Temperature(sm5852_1.temp);
+    // Filter_Param(sm5852_1.pressure, sm5852_1.flow);
+    // Temperature(sm5852_1.temp);
     // Door(1);
 }

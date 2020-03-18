@@ -26,10 +26,8 @@
 #include "rtc.h"
 #include "buzzer.h"
 #include "spi.h"
-#include "ir_decode.h"
 #include "menu.h"
 #include "system.h"
-#include "sm5852.h"
 
 int _write(int file, char *data, int len);
 
@@ -45,8 +43,8 @@ uint8_t u8g2_gpio_and_delay_stm32(U8X8_UNUSED u8x8_t *u8x8, U8X8_UNUSED uint8_t 
 uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 
 u8g2_t u8g2;
-SM5852_T sm5852_1;
-SM5852_T sm5852_2;
+// SM5852_T sm5852_1;
+// SM5852_T sm5852_2;
 
 int main(void)
 {
@@ -57,11 +55,11 @@ int main(void)
   // MX_USART1_UART_Init();
   //MX_USART2_UART_Init();
 
-  sm5852_1.i2cHandle.Instance = I2C1;
+  // sm5852_1.i2cHandle.Instance = I2C1;
   //sm5852_2.i2cHandle.Instance = I2C2;
-  SM5852_Init(&sm5852_1);
+  // SM5852_Init(&sm5852_1);
   // SM5852_Init(&sm5852_2);
-  NEC_Receiver_Init();
+  // NEC_Receiver_Init();
   MX_USB_DEVICE_Init();
   USB_EN();
   //KeyInit();
@@ -103,9 +101,9 @@ int main(void)
     /* Init meansure Time exec program */
     // uint32_t time = HAL_GetTick();
     System_Manager();
-    SM5852_Manager(&sm5852_1);
+    // SM5852_Manager(&sm5852_1);
     // SM5852_Manager(&sm5852_2);
-    NEC_Manager();
+    // NEC_Manager();
     BUTTON_Manage();
     //KeyManage();
     Output_Manage();

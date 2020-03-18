@@ -265,7 +265,7 @@ void NEC_Manager(void)
   case BACK:
     dispToggle = 1;
     if(dev.status.aut == 0)
-      dev.status.uv = ~dev.status.uv;
+      dev.status.outdoor = ~dev.status.outdoor;
     buzzer_short_beep();
     // Device_Save_Status();
     IRCmd = 0;
