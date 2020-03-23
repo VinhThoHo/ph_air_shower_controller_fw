@@ -71,9 +71,9 @@ void AUTO_Init_Time(void)
 	dev.autoFlag = 1;
 	// dev.autoTimeOff = sys_cfg.autoCnt * 60;
 	dev.autoTimeOff = sys_cfg.autoCnt; //Counter 0-99s
-	dev.status.outdoor = 1;
+	// dev.status.outdoor = 1;
 	// dev.status.lamp = 0;
-	dev.status.fan = 0;
+	dev.status.fan = 1;
 }
 
 /* Clear auto time function */
@@ -81,39 +81,43 @@ void AUTO_Clear_Time(void)
 {
 	dev.autoFlag = 0;
 	dev.autoTimeOff = 0;
-	dev.status.outdoor = 0;
-	dev.status.lamp = 0;
+	// dev.status.outdoor = 0;
+	// dev.status.lamp = 0;
 	dev.status.aut = 0;
+	dev.status.fan = 0;
 }
 
 /* check auto time function */
 void AUTO_Check_Time(void)
 {
-	if ((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff == 0))
+	if (((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff == 0)) | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff == 0)))
 	{
 		dev.autoFlag = 0;
 		dev.fanFlag = 0;
 		dev.outdoorFlag = 0;
 		dev.status.aut = 0;
 		dev.status.outdoor = 0;
+		dev.status.indoor = 0;
 		dev.status.fan = 0;
 		// buzzer_alarm_start();
 		tick_buzzer = HAL_GetTick();
 	}
-	else if ((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff != 0))
+	else if (((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff != 0)) | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff != 0)))
 	{
 		dev.status.aut = dev.status.aut;
-		dev.status.outdoor = dev.status.outdoor;
-		dev.status.lamp = 0;
-		dev.status.fan = 0;
+		// dev.status.outdoor = dev.status.outdoor;
+		dev.status.fan = dev.status.fan;
+		dev.status.lamp = dev.status.lamp;
 	}
 	else
 	{
 		dev.status.aut = dev.status.aut;
 		dev.status.outdoor = dev.status.outdoor;
+		dev.status.indoor = dev.status.indoor;
 		dev.status.lamp = dev.status.lamp;
-		dev.status.fan = dev.status.fan;
-		if(HAL_GetTick() - tick_buzzer > 60000)
+		// dev.status.fan = dev.status.fan;
+		dev.status.fan = 0;
+		if (HAL_GetTick() - tick_buzzer > 60000)
 		{
 			buzzer_alarm_stop();
 			tick_buzzer = HAL_GetTick();
@@ -131,10 +135,10 @@ void System_Manager(void)
 		if (++sys.sysTime > SYSTEM_TIME_MAX)
 			sys.sysTime = SYSTEM_TIME_MAX;
 		if (dev.status.outdoor)
-			sys.uvTime++; //Ourside door systime
+			sys.uvTime++; //Outside door systime
 		if (dev.status.fan)
 			sys.filterTime++; //Air Nozzle systime
-		if ((dev.autoFlag == 1) && (dev.fanFlag == 1))
+		if ((dev.autoFlag == 1) | (dev.fanFlag == Auto5s))
 		{
 			if (--dev.autoTimeOff <= 0)
 			{

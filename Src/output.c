@@ -60,23 +60,19 @@ void SW_Fan(uint8_t fanStatus)
 {
     if (fanStatus)
     {
-        switch (sys_cfg.fanSpeed)
-        {
-        case 0:
-        case 1: //5s
-            Fan_On();
-            break;
-        case 2: //Setup 0-99s
-            Fan_On();
-            break;
-        default:
-            break;
-        }
+        Fan_On();
     }
     else
         Fan_Off();
 }
-
+void Auto_Fan(uint8_t autoStatus)
+{
+    if (autoStatus == Auto5s)
+    {
+        dev.autoTimeOff = 5;
+        dev.status.fan = 1;
+    }
+}
 void Output_Manage(void)
 {
     SW_Neon(dev.status.lamp);       //Lamp

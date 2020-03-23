@@ -20,7 +20,7 @@
 
 #define on					1
 #define off					0
-#define ModeWait			2
+#define Auto5s			    2
 
 /* device status struct */
 typedef struct
@@ -28,9 +28,11 @@ typedef struct
 	uint8_t lamp;//Led
 	// uint8_t uv;//outside door
 	uint8_t outdoor;//outside door
+	uint8_t indoor;//inside door
+	// uint8_t ssout;
+	// uint8_t ssin;
 	uint8_t fan; //air nozzle
 	uint8_t aut;
-	uint8_t indoor;//inside door
 } DEVICE_STATUS_T;
 
 /* device struct */

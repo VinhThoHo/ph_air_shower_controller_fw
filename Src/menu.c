@@ -39,22 +39,22 @@
 const TREE_VIEW treeView[] = {
     {0x0000, " ", normalEvt, 0},
     {0x0100, " 1.Setup AirFan Time \n 2.Date Time \n 3.Speaker \n 4.Select Display \n", Dis1Evt, 0},
-      {0x0100 + 1, " AirFan Time \n", SetAutoTimeEvt, &treeView[1]},
-      {0x0100 + 2, " Set Date Time \n", SetTimeEvt, &treeView[1]},
-      {0x0100 + 3, " Speaker \n", SetSpeakerEvt, &treeView[1]},
-      {0x0100 + 4, " View Page \n", SetDisplayEvt, &treeView[1]},
+    {0x0100 + 1, " AirFan Time \n", SetAutoTimeEvt, &treeView[1]},
+    {0x0100 + 2, " Set Date Time \n", SetTimeEvt, &treeView[1]},
+    {0x0100 + 3, " Speaker \n", SetSpeakerEvt, &treeView[1]},
+    {0x0100 + 4, " View Page \n", SetDisplayEvt, &treeView[1]},
     {0x0200, " 5.Brighness \n 6.Backlight \n 7.View Time Lamp \n 8.View Time AirFan \n", Dis2Evt, 0},
-      {0x0200 + 1, " Brighness \n", SetBrighnessEvt, &treeView[6]},
-      {0x0200 + 2, " Backlight \n", SetBackLightEvt, &treeView[6]},
-      {0x0200 + 3, " Lamp Time \n", ViewUVTimeEvt, &treeView[6]},
-      {0x0200 + 4, " AirFan Time \n", ViewFilterTimeEvt, &treeView[6]},
+    {0x0200 + 1, " Brighness \n", SetBrighnessEvt, &treeView[6]},
+    {0x0200 + 2, " Backlight \n", SetBackLightEvt, &treeView[6]},
+    {0x0200 + 3, " Lamp Time \n", ViewUVTimeEvt, &treeView[6]},
+    {0x0200 + 4, " AirFan Time \n", ViewFilterTimeEvt, &treeView[6]},
     {0x0300, " 9.View Time System \n 10.Reset Lamp Time \n 11.Reset AirFan Time \n 12.Reset System Time \n", Dis3Evt, 0},
-      {0x0300 + 1, " System Time \n", ViewSystemTimeEvt, &treeView[11]},
-      {0x0300 + 2, " Reset Lamp Time \n", ResetUVTimeEvt, &treeView[11]},
-      {0x0300 + 3, " Reset AirFan Time \n", ResetFilterTimeEvt, &treeView[11]},
-      {0x0300 + 4, " Reset System Time ", ResetSystemTimeEvt, &treeView[11]},
+    {0x0300 + 1, " System Time \n", ViewSystemTimeEvt, &treeView[11]},
+    {0x0300 + 2, " Reset Lamp Time \n", ResetUVTimeEvt, &treeView[11]},
+    {0x0300 + 3, " Reset AirFan Time \n", ResetFilterTimeEvt, &treeView[11]},
+    {0x0300 + 4, " Reset System Time ", ResetSystemTimeEvt, &treeView[11]},
     {0x0400, " 13.Date Manufacture \n ", Dis4Evt, 0},
-      {0x0400 + 1, " Date Manufacture ", ManufactureEvt, &treeView[16]},
+    {0x0400 + 1, " Date Manufacture ", ManufactureEvt, &treeView[16]},
 };
 
 uint32_t btnTime;
@@ -148,32 +148,32 @@ uint16_t MENU_ToEvt(uint16_t mode, uint8_t key)
   uint8_t i;
   uint16_t ret = mode;
   uint8_t cnt;
-  for(i = 0; i < sizeof(treeView)/sizeof(treeView[0]); i++)
+  for (i = 0; i < sizeof(treeView) / sizeof(treeView[0]); i++)
   {
     HAL_IWDG_Refresh(&hiwdg);
-    if(treeView[i].keyMode == mode)
-    { 
-      if(treeView[i].handler != 0)
+    if (treeView[i].keyMode == mode)
+    {
+      if (treeView[i].handler != 0)
       {
-        if((mode == 0x0100)||(mode == 0x0200)||(mode == 0x0300)||(mode == 0x0400))
+        if ((mode == 0x0100) || (mode == 0x0200) || (mode == 0x0300) || (mode == 0x0400))
         {
           u8g2_ClearBuffer(&u8g2);
           u8g2_SetFont(&u8g2, u8g2_font_6x12_mf);
           u8g2_SetDrawColor(&u8g2, 0);
-          u8g2_DrawStr(&u8g2, ((22 - strlen(" MENU SETTING "))/2)*6, 12, " MENU SETTING ");
+          u8g2_DrawStr(&u8g2, ((22 - strlen(" MENU SETTING ")) / 2) * 6, 12, " MENU SETTING ");
           u8g2_SetDrawColor(&u8g2, 1);
           u8g2_DrawStr(&u8g2, 10, 24, u8x8_GetStringLineStart(0, treeView[i].display));
           u8g2_DrawStr(&u8g2, 10, 36, u8x8_GetStringLineStart(1, treeView[i].display));
           u8g2_DrawStr(&u8g2, 10, 48, u8x8_GetStringLineStart(2, treeView[i].display));
           u8g2_DrawStr(&u8g2, 10, 60, u8x8_GetStringLineStart(3, treeView[i].display));
-          u8g2_DrawStr(&u8g2, 1, (menuIdxCh + 1)*12, "->");
+          u8g2_DrawStr(&u8g2, 1, (menuIdxCh + 1) * 12, "->");
         }
         else
         {
           u8g2_ClearBuffer(&u8g2);
           u8g2_SetFont(&u8g2, u8g2_font_6x12_mf);
           u8g2_SetDrawColor(&u8g2, 0);
-          u8g2_DrawStr(&u8g2, ((22 - strlen(treeView[i].display))/2)*6, 12, treeView[i].display);
+          u8g2_DrawStr(&u8g2, ((22 - strlen(treeView[i].display)) / 2) * 6, 12, treeView[i].display);
           u8g2_SetDrawColor(&u8g2, 1);
         }
         u8g2_SetFont(&u8g2, u8g2_font_5x8_mf);
@@ -183,9 +183,8 @@ uint16_t MENU_ToEvt(uint16_t mode, uint8_t key)
       }
     }
   }
-  return (ret&0xFF00);
+  return (ret & 0xFF00);
 }
-
 
 void BUTTON_Manage(void)
 {
@@ -196,11 +195,11 @@ void BUTTON_Manage(void)
     {
       BUTTON_Get(key);
       // if (((keyPress[key].pressed == BTN_PRESS) && (keyPress[key].waitRelease == 0)) || ((keyPress[key].pressed == BTN_PRESS) && (key == BTN_MENU) && (menuIdx == 0)))
-      if((keyPress[key].pressed == BTN_PRESS) && (key == BTN_MENU) && (menuIdx == 0))
+      if ((keyPress[key].pressed == BTN_PRESS) && (key == BTN_MENU) && (menuIdx == 0))
       {
-        if(menuIdx == 0)
+        if (menuIdx == 0)
         {
-          if(++menuTimePress > 100)
+          if (++menuTimePress > 100)
           {
             menuTimePress = 0;
             menuIdx = 0x0100;
@@ -221,7 +220,7 @@ void BUTTON_Manage(void)
           (*keyPress[key].PressedEventHandler)(key);
         }
       }
-      if(((keyPress[key].pressed == BTN_RELEASE) && (keyPress[key].waitRelease == 1)))
+      if (((keyPress[key].pressed == BTN_RELEASE) && (keyPress[key].waitRelease == 1)))
       {
         menuTimePress = 0;
         keyPress[key].waitRelease = 0;
@@ -245,127 +244,130 @@ void MENU_Manager(uint8_t key)
 {
   switch (key)
   {
-    case BTN_DOWN:
-      menuTimeNext = 6000;
-      if (menuIdx != 0)
+  case BTN_DOWN:
+    menuTimeNext = 6000;
+    if (menuIdx != 0)
+    {
+      if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300))
       {
-        if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300))
+        if (++menuIdxCh > 4)
         {
-          if (++menuIdxCh > 4)
-          {
-            menuIdxCh = 1;
-            menuIdx += 0x0100;
-            if (menuIdx > 0x0400)
-              menuIdx = 0x0100;
-          }
-          //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
-        }
-        else if (menuIdx == 0x0400)
-        {
-          if (++menuIdxCh > 1)
-          {
-            menuIdxCh = 1;
+          menuIdxCh = 1;
+          menuIdx += 0x0100;
+          if (menuIdx > 0x0400)
             menuIdx = 0x0100;
-          }
-          //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
         }
-        MENU_ToEvt(menuIdx, key);
+        //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
       }
-      if(menuIdx == 0)
+      else if (menuIdx == 0x0400)
       {
-        /* if(dev.status.aut == 0)
+        if (++menuIdxCh > 1)
+        {
+          menuIdxCh = 1;
+          menuIdx = 0x0100;
+        }
+        //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
+      }
+      MENU_ToEvt(menuIdx, key);
+    }
+    if (menuIdx == 0)
+    {
+      /* if(dev.status.aut == 0)
           dev.status.uv = ~dev.status.uv;
         if(sys_cfg.speaker) buzzer_short_beep();
         dispToggle = 0; */
-      }
-      break;
-    case BTN_UP:
-      menuTimeNext = 6000;
-      if (menuIdx != 0)
+    }
+    break;
+  case BTN_UP:
+    menuTimeNext = 6000;
+    if (menuIdx != 0)
+    {
+      if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300))
       {
-        if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300))
+        if (--menuIdxCh == 0)
         {
-          if (--menuIdxCh == 0)
+          menuIdxCh = 4;
+          menuIdx -= 0x0100;
+          if (menuIdx < 0x0100)
           {
-            menuIdxCh = 4;
-            menuIdx -= 0x0100;
-            if (menuIdx < 0x0100)
-            {
-              menuIdx = 0x0400;
-              menuIdxCh = 1;
-            }
+            menuIdx = 0x0400;
+            menuIdxCh = 1;
           }
-          //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
         }
-        else if (menuIdx == 0x0400)
-        {
-          if (--menuIdxCh == 0)
-          {
-            menuIdxCh = 4;
-            menuIdx = 0x0300;
-          }
-          //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
-        }
-        MENU_ToEvt(menuIdx, key);
+        //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
       }
-      if(menuIdx == 0)
+      else if (menuIdx == 0x0400)
       {
-        /* if(dev.status.aut == 0)
+        if (--menuIdxCh == 0)
+        {
+          menuIdxCh = 4;
+          menuIdx = 0x0300;
+        }
+        //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
+      }
+      MENU_ToEvt(menuIdx, key);
+    }
+    if (menuIdx == 0)
+    {
+      /* if(dev.status.aut == 0)
           dev.status.fan = ~dev.status.fan;
         if(sys_cfg.speaker) buzzer_short_beep();
         dispToggle = 0; */
-      }
-      break;
-    case BTN_MENU:
-      if(menuIdx == 0)
+    }
+    break;
+  case BTN_MENU:
+    if (menuIdx == 0)
+    {
+      if (++menuTimePress > 1) //200
       {
-        if(++menuTimePress > 1) //200
-        {
-          menuTimePress = 0;
-          menuIdx = 0x0100;
-          MENU_ToEvt(menuIdx, key);
-        }
-        /* if(dev.status.aut == 0)
+        menuTimePress = 0;
+        menuIdx = 0x0100;
+        MENU_ToEvt(menuIdx, key);
+      }
+      /* if(dev.status.aut == 0)
           dev.status.lamp = ~dev.status.lamp;
         dispToggle = 0;
         if(sys_cfg.speaker) buzzer_short_beep(); */
+    }
+    else
+    {
+      if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300) || (menuIdx == 0x0400))
+      {
+        menuIdx = menuIdx + menuIdxCh;
+        menuTimeNext = 200;
+        MENU_ToEvt(menuIdx, 0xFF);
       }
       else
       {
-        if((menuIdx == 0x0100)||(menuIdx == 0x0200)||(menuIdx == 0x0300)||(menuIdx == 0x0400))
-        {
-          menuIdx = menuIdx+menuIdxCh;
-          menuTimeNext = 200;
-          MENU_ToEvt(menuIdx, 0xFF);
-        }
-        else
-        {
-          //if(menuTimeNext == 0)
-            MENU_ToEvt(menuIdx, key);
-        }
-      }
-      break;
-    case BTN_EXIT:
-      if (menuIdx != 0)
-      {
-        if((menuIdx != 0x0100)&&(menuIdx != 0x0200)&&(menuIdx != 0x0300)&&(menuIdx != 0x0400))
-        {
-          menuIdx = (menuIdx&0xFF00);
-        }
-        else
-        {
-          menuIdx = 0;
-          menuIdxCh = 1;
-        }
+        //if(menuTimeNext == 0)
         MENU_ToEvt(menuIdx, key);
       }
-      else if(menuIdx == 0)
+    }
+    break;
+  case BTN_EXIT:
+    if (menuIdx != 0)
+    {
+      if ((menuIdx != 0x0100) && (menuIdx != 0x0200) && (menuIdx != 0x0300) && (menuIdx != 0x0400))
+      {
+        menuIdx = (menuIdx & 0xFF00);
+      }
+      else
+      {
+        menuIdx = 0;
+        menuIdxCh = 1;
+      }
+      MENU_ToEvt(menuIdx, key);
+    }
+    else if (menuIdx == 0)
+    {
+      if ((dev.status.outdoor == 1) && (dev.status.indoor == 1) && dev.fanFlag == 1)
       {
         dev.status.aut = ~dev.status.aut;
         dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();
         dispToggle = 0;
         buzzer_short_beep();
       }
+    }
     break;
   }
 }

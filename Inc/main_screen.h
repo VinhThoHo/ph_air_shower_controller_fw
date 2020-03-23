@@ -26,6 +26,7 @@ extern MAIN_SCREEN_T main_scr;
 void main_screen_init(void);
 void Lamp_Status(uint8_t lampStatus);
 void OutDoor_Status(uint8_t outdoorStatus);
+void InDoor_Status(uint8_t indoorStatus);
 void TimerOff_Uv(uint32_t t_Uv);
 void Fan_Status(uint8_t fanStatus);
 void Socket_Status(uint8_t sStatus);

@@ -11,10 +11,9 @@
 #include "rtc.h"
 #include "main_screen.h"
 #include "system.h"
-#include "sm5852.h"
 
-#define LCD_WIDTH   128
-#define LCD_HEIGHT  64
+#define LCD_WIDTH 128
+#define LCD_HEIGHT 64
 
 MAIN_SCREEN_T main_scr;
 static void DateTime_Display(void);
@@ -29,52 +28,63 @@ void main_screen_init(void)
 /* Lamp status display function */
 void Lamp_Status(uint8_t lampStatus)
 {
-    u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
-    u8g2_DrawStr(&u8g2, 9, 33, "LAMP");
+    u8g2_SetFont(&u8g2, u8g2_font_4x6_tr);
+    u8g2_DrawStr(&u8g2, ((8 - strlen("LAMP")) / 2) * 34, 6, "LAMP");
+    u8g2_SetFont(&u8g2, u8g2_font_inb16_mr);
     if (lampStatus)
     {
-        u8g2_DrawBitmap(&u8g2, 0, 33, bmp_neon_on.width / 8, bmp_neon_on.height, bmp_neon_on.data);
+        // u8g2_DrawBitmap(&u8g2, 78, 2, bmp_neon_on.width / 8, bmp_neon_on.height, bmp_neon_on.data);
+        u8g2_DrawStr(&u8g2, ((8 - strlen("ON")) / 2) * 28, 25, "ON");
     }
     else
     {
-        u8g2_DrawBitmap(&u8g2, 0, 33, bmp_neon_off.width / 8, bmp_neon_off.height, bmp_neon_off.data);
+        // u8g2_DrawBitmap(&u8g2, 78, 2, bmp_neon_off.width / 8, bmp_neon_off.height, bmp_neon_off.data);
+        u8g2_DrawStr(&u8g2, ((8 - strlen("OFF")) / 2) * 38, 25, "OFF");
     }
 }
 
 /* Outdoor status display function */
 void OutDoor_Status(uint8_t outdoorStatus)
 {
-    u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
-    u8g2_DrawStr(&u8g2,((14 - strlen("OutDoor"))/2)*6, 7, "OutDoor");
-    u8g2_SetFont(&u8g2, u8g2_font_10x20_tr);
-    if (outdoorStatus == 0)
+    // u8g2_SetFont(&u8g2, u8g2_font_logisoso18_tr);
+    u8g2_SetFont(&u8g2, u8g2_font_ncenB12_tr);
+    if (outdoorStatus)
     {
-        u8g2_DrawStr(&u8g2,((8 - strlen("LOCK"))/2)*6, 26, "LOCK");
+        u8g2_DrawStr(&u8g2, ((8 - strlen("LOCK1")) / 2), 22, "LOCK1");
     }
     else
     {
-        u8g2_DrawStr(&u8g2,((8 - strlen("OPEN"))/2)*6, 26, "OPEN");
+        u8g2_DrawStr(&u8g2, ((8 - strlen("OPEN1")) / 2), 22, "OPEN1");
     }
 }
-
+void InDoor_Status(uint8_t indoorStatus)
+{
+    // u8g2_SetFont(&u8g2, u8g2_font_logisoso18_tr);
+    u8g2_SetFont(&u8g2, u8g2_font_ncenB12_tr);
+    if (indoorStatus)
+    {
+        u8g2_DrawStr(&u8g2, ((8 - strlen("LOCK2")) / 2), 54, "LOCK2");
+    }
+    else
+    {
+        u8g2_DrawStr(&u8g2, ((8 - strlen("OPEN2")) / 2), 54, "OPEN2");
+    }
+}
 void Fan_Status(uint8_t status)
 {
-    u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
-    u8g2_DrawStr(&u8g2, 75, 33, "FAN");
-
-    if(main_scr.fanRotate & status)
-        u8g2_DrawBitmap(&u8g2, 68, 38, bmp_fan_rotate.width/8, bmp_fan_rotate.height, bmp_fan_rotate.data);
+    if (main_scr.fanRotate & status)
+        u8g2_DrawBitmap(&u8g2, 72, 38, bmp_fan_rotate.width / 8, bmp_fan_rotate.height, bmp_fan_rotate.data);
     else
-        u8g2_DrawBitmap(&u8g2, 68, 38, bmp_fan_origin.width/8, bmp_fan_origin.height, bmp_fan_origin.data);
+        u8g2_DrawBitmap(&u8g2, 72, 38, bmp_fan_origin.width / 8, bmp_fan_origin.height, bmp_fan_origin.data);
 }
 
 /* auto status display function */
 void Auto_Status(uint8_t status)
 {
     uint8_t buff[7];
-    u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
-    u8g2_DrawStr(&u8g2, 105, 33, "AUTO");
-    if(status)
+    // u8g2_SetFont(&u8g2, u8g2_font_micro_tr);
+    // u8g2_DrawStr(&u8g2, 105, 33, "AUTO");
+    if (status)
     {
         u8g2_SetDrawColor(&u8g2, 0);
         u8g2_SetFont(&u8g2, u8g2_font_9x15_mr);
@@ -82,7 +92,7 @@ void Auto_Status(uint8_t status)
         sprintf(buff, "%02d", dev.autoTimeOff);
         u8g2_DrawStr(&u8g2, 104, 54, buff);
         u8g2_SetDrawColor(&u8g2, 1);
-        if(dev.autoTimeOff == 0) 
+        if (dev.autoTimeOff == 0)
             dev.status.aut = 0;
     }
     else
@@ -172,14 +182,14 @@ void Neon_Time(uint32_t time)
 static void Function_Frame(void)
 {
     u8g2_SetDrawColor(&u8g2, 1);
-    u8g2_DrawHLine(&u8g2, 0, LCD_HEIGHT/2 - 1, LCD_WIDTH);
-    u8g2_DrawVLine(&u8g2, LCD_WIDTH/2 + 1, 0, LCD_HEIGHT);
+    u8g2_DrawHLine(&u8g2, 0, LCD_HEIGHT / 2 - 1, LCD_WIDTH);
+    u8g2_DrawVLine(&u8g2, LCD_WIDTH / 2 + 1, 0, LCD_HEIGHT);
 }
 /* Display Date time function */
 static void DateTime_Display(void)
 {
     uint8_t buff[11];
-    if(localTime.sec % 2)
+    if (localTime.sec % 2)
         sprintf(buff, " %02d:%02d \n", localTime.hour, localTime.min);
     else
         sprintf(buff, " %02d %02d \n", localTime.hour, localTime.min);
@@ -198,7 +208,8 @@ void Main_Screen_Manage(void)
     if (HAL_GetTick() - main_scr.tick > 200)
     {
         main_scr.fanRotate = ~main_scr.fanRotate;
-        if(++main_scr.warnCnt > F_WARNING*2) main_scr.warnCnt = 0;
+        if (++main_scr.warnCnt > F_WARNING * 2)
+            main_scr.warnCnt = 0;
         main_scr.tick = HAL_GetTick();
     }
     u8g2_ClearBuffer(&u8g2);
@@ -207,6 +218,7 @@ void Main_Screen_Manage(void)
     //Neon_Time(sys.fanTime/3600);
     Lamp_Status(dev.status.lamp);
     OutDoor_Status(dev.status.outdoor);
+    InDoor_Status(dev.status.indoor);
     Fan_Status(dev.status.fan);
     Auto_Status(dev.status.aut);
     Function_Frame();
