@@ -90,7 +90,7 @@ void AUTO_Clear_Time(void)
 /* check auto time function */
 void AUTO_Check_Time(void)
 {
-	if (((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff == 0)) | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff == 0)))
+	if (((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff == 0)) /* | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff == 0)) */)
 	{
 		dev.autoFlag = 0;
 		dev.fanFlag = 0;
@@ -102,7 +102,7 @@ void AUTO_Check_Time(void)
 		// buzzer_alarm_start();
 		tick_buzzer = HAL_GetTick();
 	}
-	else if (((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff != 0)) | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff != 0)))
+	else if (((dev.autoFlag == 1) && (dev.fanFlag == 1) && (dev.autoTimeOff != 0)) /* | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff != 0)) */)
 	{
 		dev.status.aut = dev.status.aut;
 		// dev.status.outdoor = dev.status.outdoor;
@@ -138,7 +138,7 @@ void System_Manager(void)
 			sys.uvTime++; //Outside door systime
 		if (dev.status.fan)
 			sys.filterTime++; //Air Nozzle systime
-		if ((dev.autoFlag == 1) | (dev.fanFlag == Auto5s))
+		if (dev.autoFlag)
 		{
 			if (--dev.autoTimeOff <= 0)
 			{

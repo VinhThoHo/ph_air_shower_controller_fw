@@ -69,8 +69,15 @@ void Auto_Fan(uint8_t autoStatus)
 {
     if (autoStatus == Auto5s)
     {
-        dev.autoTimeOff = 5;
-        dev.status.fan = 1;
+        // sys_cfg.autoCnt = 5;
+        // dev.autoTimeOff = 5;
+        // dev.status.fan = 1;
+        AUTO_Init_Time();
+        dev.status.aut = 1;
+    }
+    else if(autoStatus == 0)
+    {
+        AUTO_Clear_Time();
     }
 }
 void Output_Manage(void)
@@ -79,4 +86,5 @@ void Output_Manage(void)
     SW_OutDoor(dev.status.outdoor); //Outside door
     SW_InDoor(dev.status.indoor);   //Inside door
     SW_Fan(dev.status.fan);         //Air Nozzle
+    Auto_Fan(dev.fanFlag);          //Air Nozzle is start in 5s
 }

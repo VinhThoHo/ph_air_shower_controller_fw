@@ -11,6 +11,7 @@
 #include "rtc.h"
 #include "main_screen.h"
 #include "system.h"
+#include "output.h"
 
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64

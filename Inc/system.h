@@ -20,7 +20,7 @@
 
 #define on					1
 #define off					0
-#define Auto5s			    2
+#define Auto5s			    5
 
 /* device status struct */
 typedef struct

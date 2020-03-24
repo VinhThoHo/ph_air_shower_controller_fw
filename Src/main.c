@@ -106,8 +106,8 @@ int main(void)
     // NEC_Manager();
     BUTTON_Manage();
     //KeyManage();
-    Output_Manage();
     Input_Manage();
+    Output_Manage();
     handle_buzzer();
     /* print meansure Time exec program */
     // printf("Time ex: %d\n", HAL_GetTick() - time);

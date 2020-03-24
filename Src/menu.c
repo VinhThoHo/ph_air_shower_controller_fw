@@ -366,6 +366,7 @@ void MENU_Manager(uint8_t key)
         dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();
         dispToggle = 0;
         buzzer_short_beep();
+        printf("Air nozzle is on, fanFlag = %d\r, auto = %d\n", dev.fanFlag, dev.status.aut);
       }
     }
     break;

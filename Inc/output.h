@@ -25,4 +25,5 @@ void SW_Neon(uint8_t neonStatus);
 void SW_OutDoor(uint8_t outdoorStatus);
 void SW_Fan(uint8_t fanStatus);
 void SW_InDoor(uint8_t indoorStatus);
+void Auto_Fan(uint8_t autoStatus);
 #endif
