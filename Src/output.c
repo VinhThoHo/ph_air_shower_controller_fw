@@ -11,6 +11,8 @@
 #include "config.h"
 #include "buzzer.h"
 
+uint8_t timeOff = 6; //Set time off default: 5s
+
 void Output_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -33,6 +35,8 @@ void Output_Init(void)
 
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_RESET);
+
+    ticks = HAL_GetTick();
 }
 
 void SW_Neon(uint8_t neonStatus)
@@ -61,21 +65,38 @@ void SW_Fan(uint8_t fanStatus)
     if (fanStatus)
     {
         Fan_On();
+        // printf("Air Nozzle is on\n");
     }
     else
         Fan_Off();
 }
 void Auto_Fan(uint8_t autoStatus)
 {
-    if (autoStatus == Auto5s)
+    if (autoStatus == auto5s)
     {
-        // sys_cfg.autoCnt = 5;
-        // dev.autoTimeOff = 5;
-        // dev.status.fan = 1;
-        AUTO_Init_Time();
-        dev.status.aut = 1;
+        if (HAL_GetTick() - ticks >= 1000)
+        {
+            if (++timedelay > 4)
+            {
+                --timeOff;
+                dev.autoTimeOff = timeOff;
+                dev.status.aut = 1;
+                if (timeOff <= 0)
+                {
+                    // timeOff = 0;
+                    dev.autoTimeOff = 0;
+                    timeOff = 6; //Reset default time off: 5s
+                    timedelay = 0;
+                    dev.fanFlag = 0;
+                    dev.outdoorFlag = 0;
+                }
+                dev.status.fan = 1;
+                printf("Set auto 5s, timeOff = %d second\n", timeOff);
+            }
+            ticks = HAL_GetTick();
+        }
     }
-    else if(autoStatus == 0)
+    else if (autoStatus == off)
     {
         AUTO_Clear_Time();
     }

@@ -76,7 +76,7 @@ int main(void)
   HAL_Delay(500);
   BUTTON_Init();
   Output_Init();
-  //Input_Init();
+  Input_Init();
   buzzer_init();
   RTC_Init();
   System_Init();
@@ -87,15 +87,15 @@ int main(void)
   while (1)
   {
     /* Debug measure pressure */
-     if (HAL_GetTick() - tick > 1000)
+    /*  if (HAL_GetTick() - tick > 1000)
     {
-      // printf("Pressure1: %.2f\n", sm5852_1.pressure);
-      // printf("Temp1: %.2f\n", sm5852_1.temp);
-      // printf("Pressure2: %.2f\n", sm5852_2.pressure);
-      // printf("Temp2: %.2f\n", sm5852_2.temp);
-      //printf("Hello\n");
+      printf("Pressure1: %.2f\n", sm5852_1.pressure);
+      printf("Temp1: %.2f\n", sm5852_1.temp);
+      printf("Pressure2: %.2f\n", sm5852_2.pressure);
+      printf("Temp2: %.2f\n", sm5852_2.temp);
+      printf("Hello\n");
       tick = HAL_GetTick();
-    } 
+    }  */
 
     /* -------------------------------------------------------------- */
     /* Init meansure Time exec program */

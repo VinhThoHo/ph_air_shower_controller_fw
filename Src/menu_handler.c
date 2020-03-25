@@ -407,7 +407,7 @@ uint16_t SetAutoTimeEvt(uint8_t add, uint16_t key)
       CFG_Save(); // Save config
       u8g2_SetFont(&u8g2, u8g2_font_6x12_mf);
       u8g2_DrawStr(&u8g2, ((22 - strlen("Saved!")) / 2) * 6, 60, "Saved!");
-      printf("Setup air nozzle = %d second\n", sys_cfg.autoCnt);
+      // printf("Setup air nozzle = %d second\n", sys_cfg.autoCnt);
       if ((In1() == 0) && (In2() == 0) && (In3() == 0))
       {
         if (dev.status.outdoor == 0)

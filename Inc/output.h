@@ -19,6 +19,8 @@
 #define Fan_On()                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET) 
 #define Fan_Off()               HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET)
 
+uint32_t ticks;
+uint32_t timedelay;
 void Output_Init(void);
 void Output_Manage(void);
 void SW_Neon(uint8_t neonStatus);

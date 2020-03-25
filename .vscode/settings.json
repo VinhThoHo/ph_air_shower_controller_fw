@@ -3,7 +3,8 @@
         "buzzer.h": "c",
         "usart.h": "c",
         "system.h": "c",
-        "spi.h": "c"
+        "spi.h": "c",
+        "output.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

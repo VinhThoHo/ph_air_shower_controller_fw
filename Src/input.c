@@ -6,10 +6,10 @@
 // */
 
 #include "input.h"
-#include "output.h"
 #include "main_screen.h"
 #include "info_screen.h"
 #include "system.h"
+#include "config.h"
 
 INPUT_STRUCT input;
 
@@ -34,6 +34,7 @@ void Input_Init(void)
     dev.status.lamp = 0;
     dev.outdoorFlag = 0;
     dev.fanFlag = 0;
+    dev.status.exit = 0;
 
     input.tick = HAL_GetTick();
 }
@@ -196,21 +197,31 @@ void Input_Manage(void)
     {
         if (In4() == 0) //Exit on
         {
+            dev.status.exit = 1;
             dev.status.lamp = 1;    //Led on
             dev.status.outdoor = 0; //outside door isn't lock
             dev.status.indoor = 0;  //inside door isn't lock
             dev.status.fan = 0;     //air nozzle is off
-            printf("Exit On, lamp = %d\r, outdoor = %d\r, indoor = %d\r, airnozzle = %d\n",
-                   dev.status.lamp, dev.status.outdoor, dev.status.indoor, dev.status.fan);
+            if (dev.status.aut)
+                dev.status.aut = 0;
+            printf("Exit On, lamp = %d, outdoor = %d, indoor = %d, airnozzle = %d, outdoorFlag = %d\n",
+                   dev.status.lamp, dev.status.outdoor, dev.status.indoor, dev.status.fan, dev.outdoorFlag);
         }
         else //Exit off
         {
-            if ((In1() == 0) && (In2() == 0) && (In3() == 1) && (dev.outdoorFlag == 0)) //outside sensor off, inside sensor off, people sensor off (nobody)
+            if ((In1() == 0) && (In2() == 0) && (In3() == 1) && ((dev.outdoorFlag == 0) || (dev.status.exit == 1))) //outside sensor off, inside sensor off, people sensor off (nobody)
             {
                 dev.status.outdoor = 0; //outside door isn't lock
                 dev.status.indoor = 0;  //inside door isn't lock
                 dev.status.lamp = 0;    //Led is off
                 dev.status.fan = 0;     //air nozzle is off
+
+                if (dev.outdoorFlag)
+                    dev.outdoorFlag = 0;
+                if (dev.autoTimeOff != 0)
+                    dev.autoTimeOff = 0;
+                dev.status.exit = 0;
+
                 printf("Nobody, outdoorFlag = %d\n", dev.outdoorFlag);
             }
             else if ((In1() == 0) && (In2() == 0) && (In3() == 1) && dev.outdoorFlag == 1) //The outside door is opened after that is closed and no people inside
@@ -219,18 +230,18 @@ void Input_Manage(void)
                 dev.status.lamp = 0;    //Led off
                 dev.status.outdoor = 1; //outside door is locked
                 dev.status.indoor = 1;  //inside door is locked
-                dev.fanFlag = Auto5s;   //air nozzle is on in 5s
-                // dev.outdoorFlag = 0;
+                dev.fanFlag = auto5s;   //air nozzle is on in 5s
                 printf("Sidedoor off after opened & nobody, outdoorFlag = %d, setup airnozzle = %d\n", dev.outdoorFlag, dev.fanFlag);
             }
-            else if ((In1() == 1) && (In2() == 0) && (In3() == 1) && (dev.outdoorFlag == 0)) //outside sensor on when there aren't people
+            else if ((In1() == 1) && (In2() == 0) && (In3() == 1) && ((dev.outdoorFlag == 0) || (dev.outdoorFlag == 1))) //outside sensor on when there aren't people
             {
+                dev.status.lamp = 0;   //led off
                 dev.status.indoor = 1; //inside door is locked
                 dev.outdoorFlag = 1;
                 printf("Sidedoor on but nobody, outdoorFlag = %d\n", dev.outdoorFlag);
             }
 
-            else if ((In1() == 1) && (In2() == 0) && (In3() == 0)) //The outside door is opened and have people inside
+            else if ((In1() == 1) && (In2() == 0) && (In3() == 0) && (dev.outdoorFlag == 1)) //The outside door is opened and have people inside
             {
                 dev.status.lamp = 1; //Led on
                 dev.outdoorFlag = 1;
@@ -243,14 +254,16 @@ void Input_Manage(void)
                 dev.status.lamp = 1;   //Led on
                 dev.status.indoor = 1; //inside door is locked
                 dev.fanFlag = 1;       //user setup time air nozzle
-                printf("Outside door close and there are people inside, indoor = %d, outdoorFlag = %d, fanFlag = %d\n", dev.status.indoor, dev.outdoorFlag, dev.fanFlag);
+                printf("Outside door close and there are people inside, indoor = %d, outdoorFlag = %d, fanFlag = %d\n",
+                       dev.status.indoor, dev.outdoorFlag, dev.fanFlag);
             }
             else if ((In1() == 0) && (In2() == 0) && (In3() == 0) && (dev.outdoorFlag == 0)) //Outside sensor off, people sensor on, air nozzle off
             {
                 dev.status.lamp = 1;    //Led on
                 dev.status.outdoor = 0; //outside door is open
                 dev.status.indoor = 0;  //inside door is open
-                printf("After air nozzle is operated, outside door is close, there are people inside, outdoor = %d\r, indoor = %d\r, outdoorflag = % d\r,fanFlag = % d\n ", dev.status.outdoor, dev.status.indoor, dev.outdoorFlag, dev.fanFlag);
+                printf("After air nozzle is operated, outside door is close, there are people inside, outdoor = %d\r, indoor = %d\r, outdoorflag = % d\r,fanFlag = % d\n ",
+                       dev.status.outdoor, dev.status.indoor, dev.outdoorFlag, dev.fanFlag);
             }
             else if ((In1() == 1) && (In2() == 0) && (In3() == 0) && (dev.outdoorFlag == 0)) //outside sensor on when there are people
             {

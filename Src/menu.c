@@ -360,7 +360,7 @@ void MENU_Manager(uint8_t key)
     }
     else if (menuIdx == 0)
     {
-      if ((dev.status.outdoor == 1) && (dev.status.indoor == 1) && dev.fanFlag == 1)
+      if ((dev.status.outdoor == 1) && (dev.status.indoor == 1) && (dev.fanFlag == 1))
       {
         dev.status.aut = ~dev.status.aut;
         dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();

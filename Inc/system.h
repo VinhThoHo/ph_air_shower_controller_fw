@@ -10,38 +10,38 @@
 
 #include "main.h"
 
-#define SYSTEM_TIME_MAX		3600*24*365*100 /* 100 years (s) */
-#define UV_TIME_MAX			3600*24*365*10
-#define NEON_TIME_MAX		3600*24*365*10
-#define TIME_PAGE 			15
+#define SYSTEM_TIME_MAX 3600 * 24 * 365 * 100 /* 100 years (s) */
+#define UV_TIME_MAX 3600 * 24 * 365 * 10
+#define NEON_TIME_MAX 3600 * 24 * 365 * 10
+#define TIME_PAGE 15
 
-#define DEVICE_HOLDER		0xAAAA
-#define TIME_HOLDER			0xBBBB
+#define DEVICE_HOLDER 0xAAAA
+#define TIME_HOLDER 0xBBBB
 
-#define on					1
-#define off					0
-#define Auto5s			    5
+#define on 1
+#define off 0
+#define auto5s 2
+#define Time_5s 6
 
 /* device status struct */
 typedef struct
 {
-	uint8_t lamp;//Led
-	// uint8_t uv;//outside door
-	uint8_t outdoor;//outside door
-	uint8_t indoor;//inside door
-	// uint8_t ssout;
-	// uint8_t ssin;
-	uint8_t fan; //air nozzle
+	uint8_t lamp;	 //Led
+	uint8_t outdoor; //outside door
+	uint8_t indoor;	 //inside door
+	uint8_t fan;	 //air nozzle
+	uint8_t exit;	 //button exit
 	uint8_t aut;
 } DEVICE_STATUS_T;
 
 /* device struct */
 typedef struct
 {
-	uint8_t outdoorFlag;//outside door flag
-	uint8_t indoorFlag;//inside door flag
-	uint8_t fanFlag; //air nozzle flag
-	uint8_t autoFlag;//auto air nozzle flag
+	uint8_t outdoorFlag; //outside door flag
+	uint8_t indoorFlag;	 //inside door flag
+	uint8_t fanFlag;	 //air nozzle flag
+	uint8_t autoFlag;	 //auto air nozzle flag
+	uint8_t exitFlag;
 	uint32_t autoTimeOff;
 	DEVICE_STATUS_T status;
 } DEVICE_T;
