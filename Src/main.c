@@ -105,7 +105,7 @@ int main(void)
     // SM5852_Manager(&sm5852_2);
     // NEC_Manager();
     BUTTON_Manage();
-    //KeyManage();
+    // KeyManage();
     Input_Manage();
     Output_Manage();
     handle_buzzer();

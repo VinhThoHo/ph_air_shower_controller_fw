@@ -72,6 +72,8 @@ void AUTO_Init_Time(void)
 	// dev.autoTimeOff = sys_cfg.autoCnt * 60;
 	if (dev.fanFlag == 1)
 		dev.autoTimeOff = sys_cfg.autoCnt; //Counter 0-99s
+	if (dev.fanFlag == auto5s)
+		dev.autoTimeOff = 5;
 	// dev.status.outdoor = 1;
 	// dev.status.lamp = 0;
 	dev.status.fan = 1;
@@ -85,8 +87,9 @@ void AUTO_Clear_Time(void)
 	dev.autoTimeOff = 0;
 	// dev.status.outdoor = 0;
 	// dev.status.lamp = 0;
-	dev.status.aut = 0;
+	// dev.status.aut = 0;
 	dev.status.fan = 0;
+	sys.timedelay = 0;
 }
 
 /* check auto time function */
@@ -140,16 +143,15 @@ void System_Manager(void)
 			sys.uvTime++; //Outside door systime
 		if (dev.status.fan)
 			sys.filterTime++; //Air Nozzle systime
-		if (dev.autoFlag)
+		/* if (dev.autoFlag == 1)
 		{
 			if (--dev.autoTimeOff <= 0)
 			{
 				dev.autoTimeOff = 0;
-				menuValueSet = dev.autoTimeOff;
-				sys_cfg.autoCnt = menuValueSet;
 			}
-			printf("Thoi gian dang giam dan\n");
-		}
+			printf("autoTimeOff = %d\n", dev.autoTimeOff);
+		} */
+		Auto_Fan(dev.fanFlag); //Air Nozzle is auto
 		sys.tick = HAL_GetTick();
 		Save_SysTime_BKUP();
 	}

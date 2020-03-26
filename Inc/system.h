@@ -50,10 +50,12 @@ typedef struct
 typedef struct
 {
 	uint32_t tick;
+	uint32_t timedelay;
 	uint32_t uvTime;
 	// uint32_t lampTime;
 	uint32_t filterTime;
 	uint32_t sysTime;
+	uint32_t autotimeOff;
 } SYS_STRUCT_T;
 
 /* variable declare*/
