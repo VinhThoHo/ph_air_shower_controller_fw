@@ -359,6 +359,7 @@ uint16_t SetAutoTimeEvt(uint8_t add, uint16_t key)
     menuCursor = 0;
     dozens = menuValueSet / 10;
     units = menuValueSet % 10;
+    // printf("manuValueSet = %d\n", menuValueSet);
   }
   if (key == BTN_UP)
   {
@@ -408,14 +409,14 @@ uint16_t SetAutoTimeEvt(uint8_t add, uint16_t key)
       u8g2_SetFont(&u8g2, u8g2_font_6x12_mf);
       u8g2_DrawStr(&u8g2, ((22 - strlen("Saved!")) / 2) * 6, 60, "Saved!");
       printf("Setup air nozzle = %d second\n", sys_cfg.autoCnt);
-      /* if ((In1() == 0) && (In2() == 0) && (In3() == 0))
+      if ((In1() == 0) && (In2() == 0) && (In3() == 0))
       {
         if (dev.status.outdoor == 0)
           dev.status.outdoor = on; //outside door is locked
         if (dev.status.indoor == 0)
           dev.status.indoor = on; //inside door is locked
         printf("outdoor = %d\r, indoor = %d\n", dev.status.outdoor, dev.status.indoor);
-      } */
+      }
     }
   }
   switch (menuCursor)

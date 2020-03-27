@@ -203,10 +203,9 @@ void Input_Manage(void)
             dev.status.indoor = 0;  //inside door isn't lock
             dev.status.fan = 0;     //air nozzle is off
             dev.fanFlag = 0;
-            if (dev.status.aut)
-                dev.status.aut = 0;
-            printf("Exit On, lamp = %d, outdoor = %d, indoor = %d, airnozzle = %d, outdoorFlag = %d\n",
-                   dev.status.lamp, dev.status.outdoor, dev.status.indoor, dev.status.fan, dev.outdoorFlag);
+            dev.status.aut = 0;
+            // printf("Exit On, lamp = %d, outdoor = %d, indoor = %d, airnozzle = %d, outdoorFlag = %d, fanFlag = %d\n",
+            //        dev.status.lamp, dev.status.outdoor, dev.status.indoor, dev.status.fan, dev.outdoorFlag, dev.fanFlag);
         }
         else //Exit off
         {

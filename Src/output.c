@@ -75,10 +75,10 @@ void Auto_Fan(uint8_t autoStatus)
     switch (autoStatus)
     {
     case auto5s:
-        if (++sys.timedelay > 2) //After 2s outdoor is locked
+        if (++sys.timedelay >= 1) //After 1s outdoor is locked
         {
             dev.status.outdoor = 1;
-            if (sys.timedelay > 5) //After 5s outdoor is locked
+            if (sys.timedelay > 4) //After 3s or 4s, air nozzle is on
             {
                 --timeOff;
                 dev.autoTimeOff = timeOff;
@@ -97,19 +97,18 @@ void Auto_Fan(uint8_t autoStatus)
         }
         printf("Timedelay = %d s\n", sys.timedelay);
         break;
-    case 1:
-        sys.autotimeOff = sys_cfg.autoCnt;
-        if (++sys.timedelay > 2) //outside door is locked after 3s
+    /* case 1:
+        if (++sys.timedelay >= 2) //outside door is locked after 3s
         {
             dev.status.outdoor = 1;
-            if (sys.timedelay > 6) //After 6s air nozzle is on
+            if (sys.timedelay > 5) //After 6s air nozzle is on
             {
-                /* dev.status.aut = 1;
-                // dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();
-                AUTO_Init_Time();
-                // dispToggle = 0;
-                // buzzer_short_beep();
-                printf("Air nozzle is on, fanFlag = %d\r, auto = %d\n", dev.fanFlag, dev.status.aut); */
+                // dev.status.aut = 1;
+                // // dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();
+                // AUTO_Init_Time();
+                // // dispToggle = 0;
+                // // buzzer_short_beep();
+                // // printf("Air nozzle is on, fanFlag = %d\r, auto = %d\n", dev.fanFlag, dev.status.aut);
 
                 --sys.autotimeOff;
                 dev.autoTimeOff = sys.autotimeOff;
@@ -117,7 +116,7 @@ void Auto_Fan(uint8_t autoStatus)
                 if (sys.autotimeOff <= 0)
                 {
                     dev.autoTimeOff = 0;
-                    sys.autotimeOff = sys_cfg.autoCnt; //Reset default time
+                    sys.autotimeOff = sys_cfg.autoCnt; //Reset default time off: 5s
                     sys.timedelay = 0;
                     dev.fanFlag = 0;
                     dev.outdoorFlag = 0;
@@ -126,8 +125,9 @@ void Auto_Fan(uint8_t autoStatus)
                 printf("Set auto 5s, timeOff = %d second\n", sys.autotimeOff);
             }
         }
-        printf("Timedelay = %d s\n", sys.timedelay);
-        break;
+        // printf("AutoTimeOff = %d s\n", dev.autoTimeOff);
+        printf("Timedelay = %d s\n", sys.timedelay); 
+        break; */
     case 0:
         AUTO_Clear_Time();
         break;
