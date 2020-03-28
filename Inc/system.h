@@ -30,7 +30,6 @@ typedef struct
 	uint8_t outdoor; //outside door
 	uint8_t indoor;	 //inside door
 	uint8_t fan;	 //air nozzle
-	uint8_t exit;	 //button exit
 	uint8_t aut;
 } DEVICE_STATUS_T;
 
@@ -41,7 +40,6 @@ typedef struct
 	uint8_t indoorFlag;	 //inside door flag
 	uint8_t fanFlag;	 //air nozzle flag
 	uint8_t autoFlag;	 //auto air nozzle flag
-	uint8_t exitFlag;
 	uint32_t autoTimeOff;
 	DEVICE_STATUS_T status;
 } DEVICE_T;

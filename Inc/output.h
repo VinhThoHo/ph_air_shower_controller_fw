@@ -19,11 +19,11 @@
 #define Fan_On()                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET) 
 #define Fan_Off()               HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET)
 
-void Output_Init(void);
-void Output_Manage(void);
 void SW_Neon(uint8_t neonStatus);
 void SW_OutDoor(uint8_t outdoorStatus);
-void SW_Fan(uint8_t fanStatus);
 void SW_InDoor(uint8_t indoorStatus);
+void SW_Fan(uint8_t fanStatus);
 void Auto_Fan(uint8_t autoStatus);
+void Output_Init(void);
+void Output_Manage(void);
 #endif

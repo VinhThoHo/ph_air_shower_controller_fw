@@ -81,12 +81,12 @@ void AUTO_Init_Time(void)
 /* Clear auto time function */
 void AUTO_Clear_Time(void)
 {
-	// dev.fanFlag = 0;
 	dev.autoFlag = 0;
 	dev.autoTimeOff = 0;
-	// dev.status.outdoor = 0;
+	/* // dev.status.outdoor = 0;
 	// dev.status.lamp = 0;
-	// dev.status.aut = 0;
+	// dev.status.aut = 0; */
+	dev.outdoorFlag = 0;
 	dev.status.fan = 0;
 	sys.timedelay = 0;
 }

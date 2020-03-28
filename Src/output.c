@@ -78,7 +78,7 @@ void Auto_Fan(uint8_t autoStatus)
         if (++sys.timedelay >= 1) //After 1s outdoor is locked
         {
             dev.status.outdoor = 1;
-            if (sys.timedelay > 4) //After 3s or 4s, air nozzle is on
+            if (sys.timedelay > 3) //After 3s or 4s, air nozzle is on
             {
                 --timeOff;
                 dev.autoTimeOff = timeOff;
@@ -86,8 +86,6 @@ void Auto_Fan(uint8_t autoStatus)
                 if (timeOff <= 0)
                 {
                     dev.autoTimeOff = 0;
-                    timeOff = 6; //Reset default time off: 5s
-                    sys.timedelay = 0;
                     dev.fanFlag = 0;
                     dev.outdoorFlag = 0;
                 }
@@ -97,10 +95,13 @@ void Auto_Fan(uint8_t autoStatus)
         }
         printf("Timedelay = %d s\n", sys.timedelay);
         break;
-    /* case 1:
+    case 1:
         if (++sys.timedelay >= 2) //outside door is locked after 3s
         {
-            dev.status.outdoor = 1;
+            if (dev.status.outdoor == 0)
+                dev.status.outdoor = 1;
+            if (dev.status.indoor == 0)
+                dev.status.indoor = 1;
             if (sys.timedelay > 5) //After 6s air nozzle is on
             {
                 // dev.status.aut = 1;
@@ -126,10 +127,11 @@ void Auto_Fan(uint8_t autoStatus)
             }
         }
         // printf("AutoTimeOff = %d s\n", dev.autoTimeOff);
-        printf("Timedelay = %d s\n", sys.timedelay); 
-        break; */
+        printf("Timedelay = %d s\n", sys.timedelay);
+        break;
     case 0:
         AUTO_Clear_Time();
+        timeOff = 6; //Reset default time off: 5s
         break;
     default:
         break;
