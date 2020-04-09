@@ -3,8 +3,9 @@
         "buzzer.h": "c",
         "usart.h": "c",
         "system.h": "c",
-        "spi.h": "c",
-        "output.h": "c"
+        "output.h": "c",
+        "key.h": "c",
+        "menu.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

@@ -129,27 +129,27 @@ void KeyManage(void)
 		{
 		case NEON:
 			toggle = 0;
-			// dev.status.lamp = !dev.status.lamp;
+			dev.status.lamp = !dev.status.lamp;
 			Device_Save_Status();
 			buzzer_short_beep();
 			break;
 		case UV:
 			toggle = 0;
-			// dev.status.uv = !dev.status.uv;
-			// dev.status.uv?UV_Init_Time(sys_cfg.uvMode):UV_Clear_Time();
+			dev.status.uv = !dev.status.uv;
+			dev.status.uv?UV_Init_Time(sys_cfg.uvMode):UV_Clear_Time();
 			Device_Save_Status();
 			buzzer_short_beep();
 			break;
 		case FAN:
 			toggle = 0;
-			// dev.status.fan = !dev.status.fan;
+			dev.status.fan = !dev.status.fan;
 			Device_Save_Status();
 			buzzer_short_beep();
 			break;
 		case SOCKET:
 			toggle = 0;
-			// dev.status.socket = !dev.status.socket;
-			// dev.status.socket?Auto_Init_Time(sys_cfg.autoMode):Auto_Clear_Time();
+			dev.status.socket = !dev.status.socket;
+			dev.status.socket?Auto_Init_Time(sys_cfg.autoMode):Auto_Clear_Time();
 			Device_Save_Status();
 			buzzer_short_beep();
 			break;

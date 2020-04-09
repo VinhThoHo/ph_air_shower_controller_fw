@@ -36,7 +36,6 @@ void System_Init(void)
 	main_screen_init();
 	Info_Screen_Init();
 	buzzer_init();
-	// sys.autotimeOff = sys_cfg.autoCnt;
 	sys.tick = HAL_GetTick();
 }
 
@@ -70,12 +69,10 @@ void System_Init(void)
 void AUTO_Init_Time(void)
 {
 	dev.autoFlag = 1;
-	// dev.autoTimeOff = sys_cfg.autoCnt * 60;
-	// if (dev.fanFlag == 1)
-	dev.autoTimeOff = sys_cfg.autoCnt; //Counter 0-99s
-	// dev.status.outdoor = 1;
-	// dev.status.lamp = 0;
-	dev.status.fan = 1;
+	dev.autoTimeOff = sys_cfg.autoCnt * 60;
+	dev.status.uv = 1;
+	dev.status.lamp = 0;
+	dev.status.fan = 0;
 }
 
 /* Clear auto time function */
@@ -83,44 +80,35 @@ void AUTO_Clear_Time(void)
 {
 	dev.autoFlag = 0;
 	dev.autoTimeOff = 0;
-	/* // dev.status.outdoor = 0;
-	// dev.status.lamp = 0;
-	// dev.status.aut = 0; */
-	dev.outdoorFlag = 0;
-	dev.status.fan = 0;
-	sys.timedelay = 0;
+	dev.status.uv = 0;
+	dev.status.lamp = 0;
+	dev.status.aut = 0;
 }
 
 /* check auto time function */
 void AUTO_Check_Time(void)
 {
-	if (((dev.autoFlag == 1) && (dev.fanFlag == 1 || dev.fanFlag == auto5s) && (dev.autoTimeOff == 0)) /* | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff == 0)) */)
+	if ((dev.autoFlag == 1) & (dev.autoTimeOff == 0))
 	{
 		dev.autoFlag = 0;
-		dev.fanFlag = 0;
-		dev.outdoorFlag = 0;
 		dev.status.aut = 0;
-		dev.status.outdoor = 0;
-		dev.status.indoor = 0;
-		dev.status.fan = 0;
-		// buzzer_alarm_start();
+		dev.status.uv = 0;
+		buzzer_alarm_start();
 		tick_buzzer = HAL_GetTick();
 	}
-	else if (((dev.autoFlag == 1) && (dev.fanFlag == 1 || dev.fanFlag == auto5s) && (dev.autoTimeOff != 0)) /* | ((dev.fanFlag == Auto5s) && (dev.autoTimeOff != 0)) */)
+	else if ((dev.autoFlag == 1) && (dev.autoTimeOff != 0))
 	{
 		dev.status.aut = dev.status.aut;
-		// dev.status.outdoor = dev.status.outdoor;
-		dev.status.fan = dev.status.fan;
-		dev.status.lamp = dev.status.lamp;
+		dev.status.uv = dev.status.uv;
+		dev.status.lamp = 0;
+		dev.status.fan = 0;
 	}
 	else
 	{
 		dev.status.aut = dev.status.aut;
-		dev.status.outdoor = dev.status.outdoor;
-		dev.status.indoor = dev.status.indoor;
+		dev.status.uv = dev.status.uv;
 		dev.status.lamp = dev.status.lamp;
 		dev.status.fan = dev.status.fan;
-		// dev.status.fan = 0;
 		if (HAL_GetTick() - tick_buzzer > 60000)
 		{
 			buzzer_alarm_stop();
@@ -138,24 +126,14 @@ void System_Manager(void)
 			dispToggle = 0;
 		if (++sys.sysTime > SYSTEM_TIME_MAX)
 			sys.sysTime = SYSTEM_TIME_MAX;
-		if (dev.status.outdoor)
-			sys.uvTime++; //Outside door systime
+		if (dev.status.lamp)
+			sys.uvTime++;
 		if (dev.status.fan)
-			sys.filterTime++; //Air Nozzle systime
-		if (dev.autoFlag)
-		{
-			if (--dev.autoTimeOff <= 0)
-			{
-				dev.autoTimeOff = 0;
-			}
-			printf("autoTimeOff = %ds\n", dev.autoTimeOff);
-		}
-		// printf("autotimeOff = %d\n", sys.autotimeOff);
-		Auto_Fan(dev.fanFlag); //Air Nozzle is auto
+			sys.filterTime++;
 		sys.tick = HAL_GetTick();
 		Save_SysTime_BKUP();
 	}
-	AUTO_Check_Time();
+	// AUTO_Check_Time();
 	handle_buzzer();
 	if (menuIdx == 0)
 	{
@@ -181,6 +159,16 @@ void System_Manager(void)
 				u8g2_ClearBuffer(&u8g2);
 				Main_Screen_Manage();
 			}
+			/* if (toggle)
+			{
+				u8g2_ClearBuffer(&u8g2);
+				Main_Screen_Manage();
+			}
+			else
+			{
+				u8g2_ClearBuffer(&u8g2);
+				Info_Screen_Manage();
+			} */
 		}
 	}
 }

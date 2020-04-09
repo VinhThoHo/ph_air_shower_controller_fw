@@ -36,25 +36,26 @@
       {0x0400 + 2, " System Time ", ResetSystemTimeEvt, &treeView[16]},
       {0x0400 + 3, " Date Manufacture ", ManufactureEvt, &treeView[16]},
 }; */
+
 const TREE_VIEW treeView[] = {
     {0x0000, " ", normalEvt, 0},
-    {0x0100, " 1.Setup AirFan Time \n 2.Date Time \n 3.Speaker \n 4.Select Display \n", Dis1Evt, 0},
-    {0x0100 + 1, " AirFan Time \n", SetAutoTimeEvt, &treeView[1]},
-    {0x0100 + 2, " Set Date Time \n", SetTimeEvt, &treeView[1]},
-    {0x0100 + 3, " Speaker \n", SetSpeakerEvt, &treeView[1]},
-    {0x0100 + 4, " View Page \n", SetDisplayEvt, &treeView[1]},
-    {0x0200, " 5.Brighness \n 6.Backlight \n 7.View Time Lamp \n 8.View Time AirFan \n", Dis2Evt, 0},
-    {0x0200 + 1, " Brighness \n", SetBrighnessEvt, &treeView[6]},
-    {0x0200 + 2, " Backlight \n", SetBackLightEvt, &treeView[6]},
-    {0x0200 + 3, " Lamp Time \n", ViewUVTimeEvt, &treeView[6]},
-    {0x0200 + 4, " AirFan Time \n", ViewFilterTimeEvt, &treeView[6]},
-    {0x0300, " 9.View Time System \n 10.Reset Lamp Time \n 11.Reset AirFan Time \n 12.Reset System Time \n", Dis3Evt, 0},
-    {0x0300 + 1, " System Time \n", ViewSystemTimeEvt, &treeView[11]},
-    {0x0300 + 2, " Reset Lamp Time \n", ResetUVTimeEvt, &treeView[11]},
-    {0x0300 + 3, " Reset AirFan Time \n", ResetFilterTimeEvt, &treeView[11]},
-    {0x0300 + 4, " Reset System Time ", ResetSystemTimeEvt, &treeView[11]},
-    {0x0400, " 13.Date Manufacture \n ", Dis4Evt, 0},
-    {0x0400 + 1, " Date Manufacture ", ManufactureEvt, &treeView[16]},
+    {0x0100, " 1.Date Time \n 2.Speaker \n 3.Select Display \n 4.Brighness \n", Dis1Evt, 0},
+    {0x0100 + 1, " Set Date Time \n", SetTimeEvt, &treeView[1]},
+    {0x0100 + 2, " Speaker \n", SetSpeakerEvt, &treeView[1]},
+    {0x0100 + 3, " View Page \n", SetDisplayEvt, &treeView[1]},
+    {0x0100 + 4, " Brighness \n", SetBrighnessEvt, &treeView[1]},
+    {0x0200, " 5.Backlight \n 6.View Time Lamp \n 7.View Time AirFan \n 8.View Time System \n", Dis2Evt, 0},
+    {0x0200 + 1, " Backlight \n", SetBackLightEvt, &treeView[6]},
+    {0x0200 + 2, " Lamp Time \n", ViewUVTimeEvt, &treeView[6]},
+    {0x0200 + 3, " AirFan Time \n", ViewFilterTimeEvt, &treeView[6]},
+    {0x0200 + 4, " System Time \n", ViewSystemTimeEvt, &treeView[6]},
+    {0x0300, " 9.Reset Lamp Time \n 10.Reset AirFan Time \n 11.Reset System Time \n 12.Date Manufacture \n", Dis3Evt, 0},
+    {0x0300 + 1, " Reset Lamp Time \n", ResetUVTimeEvt, &treeView[11]},
+    {0x0300 + 2, " Reset AirFan Time \n", ResetFilterTimeEvt, &treeView[11]},
+    {0x0300 + 3, " Reset System Time ", ResetSystemTimeEvt, &treeView[11]},
+    {0x0300 + 4, " Date Manufacture ", ManufactureEvt, &treeView[11]},
+    // {0x0400, " Setup AirFan \n ", Dis4Evt, 0},
+    {0x0400, " AirFan Time \n", SetAutoTimeEvt, &treeView[16]},
 };
 
 uint32_t btnTime;
@@ -155,7 +156,7 @@ uint16_t MENU_ToEvt(uint16_t mode, uint8_t key)
     {
       if (treeView[i].handler != 0)
       {
-        if ((mode == 0x0100) || (mode == 0x0200) || (mode == 0x0300) || (mode == 0x0400))
+        if ((mode == 0x0100) || (mode == 0x0200) || (mode == 0x0300))
         {
           u8g2_ClearBuffer(&u8g2);
           u8g2_SetFont(&u8g2, u8g2_font_6x12_mf);
@@ -207,11 +208,11 @@ void BUTTON_Manage(void)
           }
         }
       }
-      if (((keyPress[key].pressed == BTN_PRESS) && (keyPress[key].waitRelease == 0)))
+      if ((keyPress[key].pressed == BTN_PRESS) && (keyPress[key].waitRelease == 0))
       {
         keyPress[key].waitRelease = 1;
         menuTimeOut = 60 * 100;
-        //BL_On();
+        // BL_On();
         if (*keyPress[key].PressedEventHandler != MENU_Manager)
           BUTTON_Setup(&keyPress[key], MENU_Manager, 0);
         else
@@ -220,7 +221,7 @@ void BUTTON_Manage(void)
           (*keyPress[key].PressedEventHandler)(key);
         }
       }
-      if (((keyPress[key].pressed == BTN_RELEASE) && (keyPress[key].waitRelease == 1)))
+      if ((keyPress[key].pressed == BTN_RELEASE) && (keyPress[key].waitRelease == 1))
       {
         menuTimePress = 0;
         keyPress[key].waitRelease = 0;
@@ -231,9 +232,7 @@ void BUTTON_Manage(void)
     if (menuTimeOut != 0)
       menuTimeOut--;
     if (menuTimeOut == 0)
-    {
       menuIdx = 0;
-    }
     if (menuTimeNext != 0)
       menuTimeNext--;
     btnTime = HAL_GetTick();
@@ -254,28 +253,24 @@ void MENU_Manager(uint8_t key)
         {
           menuIdxCh = 1;
           menuIdx += 0x0100;
-          if (menuIdx > 0x0400)
+          if (menuIdx > 0x0300)
             menuIdx = 0x0100;
         }
         //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
       }
-      else if (menuIdx == 0x0400)
+      /* else if (menuIdx == 0x0400)
       {
-        if (++menuIdxCh > 1)
+        if (++menuIdxCh > 3)
         {
           menuIdxCh = 1;
           menuIdx = 0x0100;
         }
-        //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
-      }
+      } */
       MENU_ToEvt(menuIdx, key);
     }
-    if (menuIdx == 0)
+    else if (menuIdx == 0)
     {
-      /* if(dev.status.aut == 0)
-          dev.status.uv = ~dev.status.uv;
-        if(sys_cfg.speaker) buzzer_short_beep();
-        dispToggle = 0; */
+      dispToggle = 0;
     }
     break;
   case BTN_UP:
@@ -290,48 +285,48 @@ void MENU_Manager(uint8_t key)
           menuIdx -= 0x0100;
           if (menuIdx < 0x0100)
           {
-            menuIdx = 0x0400;
-            menuIdxCh = 1;
+            menuIdx = 0x0300;
+            menuIdxCh = 4;
           }
         }
         //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
       }
-      else if (menuIdx == 0x0400)
+      /* else if (menuIdx == 0x0400)
       {
         if (--menuIdxCh == 0)
         {
           menuIdxCh = 4;
-          menuIdx = 0x0300;
+          menuIdx = 0x0200;
         }
-        //printf("idx: %.4x - IdxCh: %d\n", menuIdx, menuIdxCh);
-      }
+      } */
       MENU_ToEvt(menuIdx, key);
     }
-    if (menuIdx == 0)
+    else if (menuIdx == 0)
     {
-      /* if(dev.status.aut == 0)
-          dev.status.fan = ~dev.status.fan;
-        if(sys_cfg.speaker) buzzer_short_beep();
-        dispToggle = 0; */
+      dispToggle = 15;
     }
     break;
   case BTN_MENU:
     if (menuIdx == 0)
     {
-      if (++menuTimePress > 1) //200
+      if (++menuTimePress > 200)
       {
         menuTimePress = 0;
         menuIdx = 0x0100;
         MENU_ToEvt(menuIdx, key);
       }
-      /* if(dev.status.aut == 0)
-          dev.status.lamp = ~dev.status.lamp;
-        dispToggle = 0;
-        if(sys_cfg.speaker) buzzer_short_beep(); */
+      /* else
+      {
+        menuIdx = 0x0400;
+        MENU_ToEvt(menuIdx, key);
+        dev.setWait = 1;
+        buzzer_short_beep();
+        printf("Setup AirNozzle Time Auto, setWait = %d\n", dev.setWait);
+      } */
     }
     else
     {
-      if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300) || (menuIdx == 0x0400))
+      if ((menuIdx == 0x0100) || (menuIdx == 0x0200) || (menuIdx == 0x0300))
       {
         menuIdx = menuIdx + menuIdxCh;
         menuTimeNext = 200;
@@ -350,26 +345,28 @@ void MENU_Manager(uint8_t key)
       if ((menuIdx != 0x0100) && (menuIdx != 0x0200) && (menuIdx != 0x0300) && (menuIdx != 0x0400))
       {
         menuIdx = (menuIdx & 0xFF00);
+        printf("Exit is pressed the first time...\n");
       }
       else
       {
         menuIdx = 0;
         menuIdxCh = 1;
+        printf("Exit is pressed a second time...\n");
       }
       MENU_ToEvt(menuIdx, key);
-      // printf("Exit is pressed\n");
+      if (dev.setWait)
+        dev.setWait = 0;
+      printf("setWait = %d\n", dev.setWait);
     }
     else if (menuIdx == 0)
     {
-      if ((dev.status.outdoor == 1) && (dev.status.indoor == 1) && (dev.fanFlag == 1))
-      {
-        dev.status.aut = ~dev.status.aut;
-        dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();
-        dispToggle = 0;
-        buzzer_short_beep();
-        printf("Air nozzle is on, fanFlag = %d\r, auto = %d\n", dev.fanFlag, dev.status.aut);
-      }
+      menuIdx = 0x0400;
+      MENU_ToEvt(menuIdx, key);
+      dev.setWait = 1;
+      buzzer_short_beep();
+      printf("Setup AirNozzle Time Auto, setWait = %d\n", dev.setWait);
     }
+    printf("Exit is operating...\n");
     break;
   }
 }

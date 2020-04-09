@@ -19,5 +19,4 @@ void MX_IWDG_Init(void)
   {
     Error_Handler();
   }
-
 }

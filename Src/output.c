@@ -10,9 +10,9 @@
 #include "system.h"
 #include "config.h"
 #include "buzzer.h"
-#include "menu.h"
 
-uint8_t timeOff = 6; //Set time off default: 5s
+uint8_t timeOff; //Set time off default: 5s
+uint32_t menuValueSet;
 
 void Output_Init(void)
 {
@@ -36,6 +36,8 @@ void Output_Init(void)
 
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_RESET);
+
+    tickcnt = HAL_GetTick();
 }
 
 void SW_Neon(uint8_t neonStatus)
@@ -62,10 +64,7 @@ void SW_InDoor(uint8_t indoorStatus)
 void SW_Fan(uint8_t fanStatus)
 {
     if (fanStatus)
-    {
         Fan_On();
-        // printf("Air Nozzle is on\n");
-    }
     else
         Fan_Off();
 }
@@ -75,73 +74,74 @@ void Auto_Fan(uint8_t autoStatus)
     switch (autoStatus)
     {
     case auto5s:
-        if (++sys.timedelay >= 1) //After 1s outdoor is locked
+        if (HAL_GetTick() - tickcnt >= 1000)
         {
-            dev.status.outdoor = 1;
-            if (sys.timedelay > 3) //After 3s or 4s, air nozzle is on
+            dispToggle = 0;
+            if (++sys.timedelay >= 2) //After 2s outdoor is locked
             {
-                --timeOff;
-                dev.autoTimeOff = timeOff;
-                dev.status.aut = 1;
-                if (timeOff <= 0)
+                dev.status.uv = 1;     // outside door is lock
+                if (sys.timedelay > 4) //After 4s, air nozzle is on
                 {
-                    dev.autoTimeOff = 0;
-                    dev.fanFlag = 0;
-                    dev.outdoorFlag = 0;
+                    dev.status.aut = 1;
+                    dev.autoTimeOff = timeOff;
+                    if (timeOff <= 0)
+                    {
+                        dev.fanFlag = 0;
+                        dev.outdoorFlag = 0;
+                    }
+                    printf("Set auto 5s, timeOff = %d second\n", timeOff);
+                    timeOff--;
+                    dev.status.fan = 1;
                 }
-                dev.status.fan = 1;
-                printf("Set auto 5s, timeOff = %d second\n", timeOff);
             }
+            printf("Timedelay = %d s\n", sys.timedelay);
+            tickcnt = HAL_GetTick();
         }
-        printf("Timedelay = %d s\n", sys.timedelay);
         break;
-    case 1:
-        if (++sys.timedelay >= 2) //outside door is locked after 3s
+    case setauto:
+        if (HAL_GetTick() - tickcnt >= 1000)
         {
-            if (dev.status.outdoor == 0)
-                dev.status.outdoor = 1;
-            if (dev.status.indoor == 0)
-                dev.status.indoor = 1;
-            if (sys.timedelay > 5) //After 6s air nozzle is on
+            dispToggle = 0;
+            if (++sys.timedelay >= 2) //outside door is locked after 3s
             {
-                // dev.status.aut = 1;
-                // // dev.status.aut ? AUTO_Init_Time() : AUTO_Clear_Time();
-                // AUTO_Init_Time();
-                // // dispToggle = 0;
-                // // buzzer_short_beep();
-                // // printf("Air nozzle is on, fanFlag = %d\r, auto = %d\n", dev.fanFlag, dev.status.aut);
-
-                --sys.autotimeOff;
-                dev.autoTimeOff = sys.autotimeOff;
-                dev.status.aut = 1;
-                if (sys.autotimeOff <= 0)
+                dev.status.uv = 1;
+                if ((sys.timedelay > 7) && (dev.setWait != 1)) //After 7s air nozzle is on
                 {
-                    dev.autoTimeOff = 0;
-                    sys.autotimeOff = sys_cfg.autoCnt; //Reset default time off: 5s
-                    sys.timedelay = 0;
-                    dev.fanFlag = 0;
-                    dev.outdoorFlag = 0;
+                    dev.status.aut = 1;
+                    dev.autoTimeOff = sys_cfg.autoCnt;
+                    if (sys_cfg.autoCnt <= 0)
+                    {
+                        sys_cfg.autoCnt = menuValueSet + 1;
+                        dev.fanFlag = 0;
+                        dev.outdoorFlag = 0;
+                    }
+                    sys_cfg.autoCnt--;
+                    dev.status.fan = 1;
+                    // buzzer_short_beep();
+                    // printf("Air nozzle is on, fanFlag = %d\r, auto = %d\n", dev.fanFlag, dev.status.aut);
                 }
-                dev.status.fan = 1;
-                printf("Set auto 5s, timeOff = %d second\n", sys.autotimeOff);
             }
+            // printf("AutoTimeOff = %d s\n", dev.autoTimeOff);
+            printf("Timedelay = %d s\n", sys.timedelay);
+            tickcnt = HAL_GetTick();
         }
-        // printf("AutoTimeOff = %d s\n", dev.autoTimeOff);
-        printf("Timedelay = %d s\n", sys.timedelay);
         break;
     case 0:
-        AUTO_Clear_Time();
-        timeOff = 6; //Reset default time off: 5s
-        break;
-    default:
+        // AUTO_Clear_Time();
+        timeOff = 5; //Reset default time off: 5s
+        sys.timedelay = 0;
+        // if(dev.setWait)
+        // sys_cfg.autoCnt = menuValueSet;
+        if (sys_cfg.autoCnt == 0)
+            sys_cfg.autoCnt = 10; //Reset default time off: 10s
         break;
     }
 }
 void Output_Manage(void)
 {
-    SW_Neon(dev.status.lamp);       //Lamp
-    SW_OutDoor(dev.status.outdoor); //Outside door
-    SW_InDoor(dev.status.indoor);   //Inside door
-    SW_Fan(dev.status.fan);         //Air Nozzle
-    // Auto_Fan(dev.fanFlag);          //Air Nozzle is auto
+    SW_Neon(dev.status.lamp);     //Lamp
+    SW_OutDoor(dev.status.uv);    //Outside door
+    SW_InDoor(dev.status.indoor); //Inside door
+    SW_Fan(dev.status.fan);       //Air Nozzle
+    Auto_Fan(dev.fanFlag);        //Air Nozzle is auto
 }

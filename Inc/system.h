@@ -10,36 +10,33 @@
 
 #include "main.h"
 
-#define SYSTEM_TIME_MAX 3600 * 24 * 365 * 100 /* 100 years (s) */
-#define UV_TIME_MAX 3600 * 24 * 365 * 10
-#define NEON_TIME_MAX 3600 * 24 * 365 * 10
-#define TIME_PAGE 15
+#define SYSTEM_TIME_MAX		3600*24*365*100 /* 100 years (s) */
+#define UV_TIME_MAX			3600*24*365*10
+#define NEON_TIME_MAX		3600*24*365*10
+#define TIME_PAGE 			15
 
-#define DEVICE_HOLDER 0xAAAA
-#define TIME_HOLDER 0xBBBB
+#define DEVICE_HOLDER		0xAAAA
+#define TIME_HOLDER			0xBBBB
 
-#define on 1
-#define off 0
-#define auto5s 2
-#define Time_5s 6
-
+#define auto5s 				2
+#define setauto				1
 /* device status struct */
 typedef struct
 {
-	uint8_t lamp;	 //Led
-	uint8_t outdoor; //outside door
-	uint8_t indoor;	 //inside door
-	uint8_t fan;	 //air nozzle
+	uint8_t lamp;
+	uint8_t uv;
+	uint8_t indoor;
+	uint8_t fan;
 	uint8_t aut;
 } DEVICE_STATUS_T;
 
 /* device struct */
 typedef struct
 {
-	uint8_t outdoorFlag; //outside door flag
-	uint8_t indoorFlag;	 //inside door flag
-	uint8_t fanFlag;	 //air nozzle flag
-	uint8_t autoFlag;	 //auto air nozzle flag
+	uint8_t setWait;
+	uint8_t outdoorFlag;
+	uint8_t fanFlag;
+	uint8_t autoFlag;
 	uint32_t autoTimeOff;
 	DEVICE_STATUS_T status;
 } DEVICE_T;
@@ -48,12 +45,10 @@ typedef struct
 typedef struct
 {
 	uint32_t tick;
-	uint32_t timedelay;
 	uint32_t uvTime;
-	// uint32_t lampTime;
 	uint32_t filterTime;
 	uint32_t sysTime;
-	uint32_t autotimeOff;
+	uint32_t timedelay;
 } SYS_STRUCT_T;
 
 /* variable declare*/

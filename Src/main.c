@@ -26,8 +26,10 @@
 #include "rtc.h"
 #include "buzzer.h"
 #include "spi.h"
+#include "ir_decode.h"
 #include "menu.h"
 #include "system.h"
+#include "sm5852.h"
 
 int _write(int file, char *data, int len);
 
@@ -43,8 +45,8 @@ uint8_t u8g2_gpio_and_delay_stm32(U8X8_UNUSED u8x8_t *u8x8, U8X8_UNUSED uint8_t 
 uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 
 u8g2_t u8g2;
-// SM5852_T sm5852_1;
-// SM5852_T sm5852_2;
+SM5852_T sm5852_1;
+SM5852_T sm5852_2;
 
 int main(void)
 {
@@ -86,17 +88,6 @@ int main(void)
   MX_IWDG_Init();
   while (1)
   {
-    /* Debug measure pressure */
-    /*  if (HAL_GetTick() - tick > 1000)
-    {
-      printf("Pressure1: %.2f\n", sm5852_1.pressure);
-      printf("Temp1: %.2f\n", sm5852_1.temp);
-      printf("Pressure2: %.2f\n", sm5852_2.pressure);
-      printf("Temp2: %.2f\n", sm5852_2.temp);
-      printf("Hello\n");
-      tick = HAL_GetTick();
-    }  */
-
     /* -------------------------------------------------------------- */
     /* Init meansure Time exec program */
     // uint32_t time = HAL_GetTick();
@@ -105,22 +96,13 @@ int main(void)
     // SM5852_Manager(&sm5852_2);
     // NEC_Manager();
     BUTTON_Manage();
-    // KeyManage();
-    Input_Manage();
+    //KeyManage();
     Output_Manage();
+    Input_Manage();
     handle_buzzer();
     /* print meansure Time exec program */
     // printf("Time ex: %d\n", HAL_GetTick() - time);
     /* -------------------------------------------------------------- */
-
-    /* -----------Test LCD for Air Shower------------ */
-    // u8g2_SetFont(&u8g2, u8g2_font_inb38_mf);
-    // u8g2_DrawStr(&u8g2, 1, 52, "LOCK");
-    // u8g2_DrawStr(&u8g2, 1, 52, "OPEN");
-    // u8g2_SetFont(&u8g2, u8g2_font_logisoso62_tn);
-    // u8g2_DrawStr(&u8g2, ((10 - strlen("99"))/2)*6, 63, "99");
-    // u8g2_DrawStr(&u8g2, ((10 - strlen("99"))/2)*6, 63, "00");
-    /* ---------------------------------------------- */
 
     HAL_IWDG_Refresh(&hiwdg);
 

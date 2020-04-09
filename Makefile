@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = ph_air_shower_controller_fw
+TARGET = ph_biological_safety_classi_fw
 
 #######################################
 # check platform and add DIR
@@ -65,12 +65,15 @@ Src/main.c \
 Src/gpio.c \
 Src/bitmaps.c \
 Src/lcd_bl.c \
+Src/kalman_filter.c \
+Src/sm5852.c \
 Src/logo.c \
 Src/config.c \
 Src/system.c \
 Src/main_screen.c \
 Src/info_screen.c \
 Src/output.c \
+Src/ir_decode.c \
 Src/tick_us.c \
 Src/menu.c \
 Src/menu_handler.c \

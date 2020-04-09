@@ -214,14 +214,10 @@ void Main_Screen_Manage(void)
         main_scr.tick = HAL_GetTick();
     }
     u8g2_ClearBuffer(&u8g2);
-    //DateTime_Display();
-    //UV_Time(sys.uvTime/3600);
-    //Neon_Time(sys.fanTime/3600);
     Lamp_Status(dev.status.lamp);
-    OutDoor_Status(dev.status.outdoor);
+    OutDoor_Status(dev.status.uv);
     InDoor_Status(dev.status.indoor);
     Fan_Status(dev.status.fan);
     Auto_Status(dev.status.aut);
     Function_Frame();
-    // Filter_Pcent(sm5852_1.pressure, sys_cfg.pressureVal);
 }
